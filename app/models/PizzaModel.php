@@ -14,10 +14,10 @@ class PizzaModel
         $this->db->query("SELECT productId,
                                  productName,
                                  productPrice,
-                                 productCategory,
+                                 productType,
                                  productPath 
                                  FROM products 
-                                 WHERE productCategory = 'pizza' AND productIsActive = 1");
+                                 WHERE productType = 'pizza' AND productIsActive = 1");
         return $this->db->resultSet();
     }
 
@@ -26,10 +26,10 @@ class PizzaModel
         $this->db->query("SELECT productId,
                                  productName,
                                  productPrice,
-                                 productCategory,
+                                 productType,
                                  productPath 
                                  FROM products 
-                                 WHERE productCategory = 'drink' AND productIsActive = 1");
+                                 WHERE productType = 'drink' AND productIsActive = 1");
         return $this->db->resultSet();
     }
 
@@ -38,10 +38,10 @@ class PizzaModel
         $this->db->query("SELECT productId,
                                  productName,
                                  productPrice,
-                                 productCategory,
+                                 productType,
                                  productPath 
                                  FROM products 
-                                 WHERE productCategory = 'snack' AND productIsActive = 1");
+                                 WHERE productType = 'snack' AND productIsActive = 1");
         return $this->db->resultSet();
     }
 
@@ -56,6 +56,22 @@ class PizzaModel
                                  promotionPathC
                                  FROM promotions
                                  WHERE promotionIsActive = 1");
+        return $this->db->resultSet();
+    }
+
+    public function getReviews()
+    {
+        $this->db->query("SELECT r.reviewId,
+                                 r.reviewCustomerId,
+                                 r.reviewOrderId,
+                                 r.reviewRating,
+                                 r.reviewText,
+                                 c.customerFirstName,
+                                 c.customerLastName
+                                 FROM reviews as r
+                                 INNER JOIN customers as c ON r.reviewCustomerId = c.customerId
+                                 INNER JOIN orders as o ON r.reviewOrderId = o.orderId
+                                 WHERE reviewIsActive = 1");
         return $this->db->resultSet();
     }
 

@@ -16,14 +16,11 @@ buttons.forEach((button) => {
   });
 });
 
-function openToast(productName)
-{
-
+function openToast(productName) {
   var toast = document.querySelector(".js-toast");
   toast.querySelector(".toast__p").innerHTML = productName + " added to cart";
   openToastEvent = new CustomEvent("openToast"); // custom event
   toast.dispatchEvent(openToastEvent);
-
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -46,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
       openToast(productName);
 
       addToCart(productId, productName, productPrice, productPath);
-      updateSelectedPizzas();
+      updateSelectedProducts();
     });
   });
 
@@ -88,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Function to update and display selected pizzas
-  function updateSelectedPizzas() {
+  function updateSelectedProducts() {
     const selectedPizzasContainer = document.getElementById(
       "selectedPizzasContainer"
     );
@@ -153,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
           // Update the local storage after removing an item
           saveCartToLocalStorage();
           // Update the selected pizzas display
-          updateSelectedPizzas();
+          updateSelectedProducts();
 
           updateCartCount();
         });
@@ -176,11 +173,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
       totalPriceElement.textContent = `Total Price: €${totalPrice.toFixed(2)}`;
     } else {
-      totalPriceElement.textContent = "Total Price: €0.00"
+      const listItem = document.createElement("li");
+      listItem.classList.add("dr-cart__product");
+
+      const emptyCart = document.createElement("h2");
+      emptyCart.classList.add("text-lg", "text-center");
+      emptyCart.textContent = "Your cart is empty!!!";
+
+      listItem.appendChild(emptyCart);
+
+      selectedProductsList.appendChild(listItem);
+
+      totalPriceElement.textContent = "Total Price: €0.00";
     }
   }
 
-  updateSelectedPizzas();
+  updateSelectedProducts();
 
   updateCartCount();
 });

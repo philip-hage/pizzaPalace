@@ -1620,6 +1620,186 @@ function resetFocusTabsStyle() {
 		}
 	};
 }());
+// File#: _1_menu
+// Usage: codyhouse.co/license
+(function() {
+	var Menu = function(element) {
+		this.element = element;
+		this.elementId = this.element.getAttribute('id');
+		this.menuItems = this.element.getElementsByClassName('js-menu__content');
+		this.trigger = document.querySelectorAll('[aria-controls="'+this.elementId+'"]');
+		this.selectedTrigger = false;
+		this.menuIsOpen = false;
+		this.initMenu();
+		this.initMenuEvents();
+	};	
+
+	Menu.prototype.initMenu = function() {
+		// init aria-labels
+		for(var i = 0; i < this.trigger.length; i++) {
+			this.trigger[i].setAttribute('aria-expanded', 'false');
+			this.trigger[i].setAttribute('aria-haspopup', 'true');
+		}
+		// init tabindex
+		for(var i = 0; i < this.menuItems.length; i++) {
+			this.menuItems[i].setAttribute('tabindex', '0');
+		}
+	};
+
+	Menu.prototype.initMenuEvents = function() {
+		var self = this;
+		for(var i = 0; i < this.trigger.length; i++) {(function(i){
+			self.trigger[i].addEventListener('click', function(event){
+				event.preventDefault();
+				// if the menu had been previously opened by another trigger element -> close it first and reopen in the right position
+				if(self.element.classList.contains('menu--is-visible') && self.selectedTrigger !=  self.trigger[i]) {
+					self.toggleMenu(false, false); // close menu
+				}
+				// toggle menu
+				self.selectedTrigger = self.trigger[i];
+				self.toggleMenu(!self.element.classList.contains('menu--is-visible'), true);
+			});
+		})(i);}
+		
+		// keyboard events
+		this.element.addEventListener('keydown', function(event) {
+			// use up/down arrow to navigate list of menu items
+			if( !event.target.classList.contains('js-menu__content') ) return;
+			if( (event.keyCode && event.keyCode == 40) || (event.key && event.key.toLowerCase() == 'arrowdown') ) {
+				self.navigateItems(event, 'next');
+			} else if( (event.keyCode && event.keyCode == 38) || (event.key && event.key.toLowerCase() == 'arrowup') ) {
+				self.navigateItems(event, 'prev');
+			}
+		});
+	};
+
+	Menu.prototype.toggleMenu = function(bool, moveFocus) {
+		var self = this;
+		// toggle menu visibility
+		this.element.classList.toggle('menu--is-visible', bool);
+		this.menuIsOpen = bool;
+		if(bool) {
+			this.selectedTrigger.setAttribute('aria-expanded', 'true');
+			moveFocusFn(this.menuItems[0]);
+			this.element.addEventListener("transitionend", function(event) {moveFocusFn(self.menuItems[0]);}, {once: true});
+			// position the menu element
+			this.positionMenu();
+			// add class to menu trigger
+			this.selectedTrigger.classList.add('menu-control--active');
+		} else if(this.selectedTrigger) {
+			this.selectedTrigger.setAttribute('aria-expanded', 'false');
+			if(moveFocus) moveFocusFn(this.selectedTrigger);
+			// remove class from menu trigger
+			this.selectedTrigger.classList.remove('menu-control--active');
+			this.selectedTrigger = false;
+		}
+	};
+
+	Menu.prototype.positionMenu = function(event, direction) {
+		var selectedTriggerPosition = this.selectedTrigger.getBoundingClientRect(),
+			menuOnTop = (window.innerHeight - selectedTriggerPosition.bottom) < selectedTriggerPosition.top;
+			// menuOnTop = window.innerHeight < selectedTriggerPosition.bottom + this.element.offsetHeight;
+			
+		var left = selectedTriggerPosition.left,
+			right = (window.innerWidth - selectedTriggerPosition.right),
+			isRight = (window.innerWidth < selectedTriggerPosition.left + this.element.offsetWidth);
+
+		var horizontal = isRight ? 'right: '+right+'px;' : 'left: '+left+'px;',
+			vertical = menuOnTop
+				? 'bottom: '+(window.innerHeight - selectedTriggerPosition.top)+'px;'
+				: 'top: '+selectedTriggerPosition.bottom+'px;';
+		// check right position is correct -> otherwise set left to 0
+		if( isRight && (right + this.element.offsetWidth) > window.innerWidth) horizontal = 'left: '+ parseInt((window.innerWidth - this.element.offsetWidth)/2)+'px;';
+		var maxHeight = menuOnTop ? selectedTriggerPosition.top - 20 : window.innerHeight - selectedTriggerPosition.bottom - 20;
+		this.element.setAttribute('style', horizontal + vertical +'max-height:'+Math.floor(maxHeight)+'px;');
+	};
+
+	Menu.prototype.navigateItems = function(event, direction) {
+		event.preventDefault();
+		var index = Array.prototype.indexOf.call(this.menuItems, event.target),
+			nextIndex = direction == 'next' ? index + 1 : index - 1;
+		if(nextIndex < 0) nextIndex = this.menuItems.length - 1;
+		if(nextIndex > this.menuItems.length - 1) nextIndex = 0;
+		moveFocusFn(this.menuItems[nextIndex]);
+	};
+
+	Menu.prototype.checkMenuFocus = function() {
+		var menuParent = document.activeElement.closest('.js-menu');
+		if (!menuParent || !this.element.contains(menuParent)) this.toggleMenu(false, false);
+	};
+
+	Menu.prototype.checkMenuClick = function(target) {
+		if( !this.element.contains(target) && !target.closest('[aria-controls="'+this.elementId+'"]')) this.toggleMenu(false);
+	};
+
+	function moveFocusFn(element) {
+    element.focus();
+    if (document.activeElement !== element) {
+      element.setAttribute('tabindex','-1');
+      element.focus();
+    }
+  };
+
+	window.Menu = Menu;
+
+	//initialize the Menu objects
+	var menus = document.getElementsByClassName('js-menu');
+	if( menus.length > 0 ) {
+		var menusArray = [];
+		var scrollingContainers = [];
+		for( var i = 0; i < menus.length; i++) {
+			(function(i){
+				menusArray.push(new Menu(menus[i]));
+				var scrollableElement = menus[i].getAttribute('data-scrollable-element');
+				if(scrollableElement && !scrollingContainers.includes(scrollableElement)) scrollingContainers.push(scrollableElement);
+			})(i);
+		}
+
+		// listen for key events
+		window.addEventListener('keyup', function(event){
+			if( event.keyCode && event.keyCode == 9 || event.key && event.key.toLowerCase() == 'tab' ) {
+				//close menu if focus is outside menu element
+				menusArray.forEach(function(element){
+					element.checkMenuFocus();
+				});
+			} else if( event.keyCode && event.keyCode == 27 || event.key && event.key.toLowerCase() == 'escape' ) {
+				// close menu on 'Esc'
+				menusArray.forEach(function(element){
+					element.toggleMenu(false, false);
+				});
+			} 
+		});
+		// close menu when clicking outside it
+		window.addEventListener('click', function(event){
+			menusArray.forEach(function(element){
+				element.checkMenuClick(event.target);
+			});
+		});
+		// on resize -> close all menu elements
+		window.addEventListener('resize', function(event){
+			menusArray.forEach(function(element){
+				element.toggleMenu(false, false);
+			});
+		});
+		// on scroll -> close all menu elements
+		window.addEventListener('scroll', function(event){
+			menusArray.forEach(function(element){
+				if(element.menuIsOpen) element.toggleMenu(false, false);
+			});
+		});
+		// take into account additinal scrollable containers
+		for(var j = 0; j < scrollingContainers.length; j++) {
+			var scrollingContainer = document.querySelector(scrollingContainers[j]);
+			if(scrollingContainer) {
+				scrollingContainer.addEventListener('scroll', function(event){
+					menusArray.forEach(function(element){
+						if(element.menuIsOpen) element.toggleMenu(false, false);
+					});
+				});
+			}
+		}
+	}
+}());
 // File#: _1_number-input
 // Usage: codyhouse.co/license
 (function() {
@@ -1687,6 +1867,180 @@ function resetFocusTabsStyle() {
 			(function(i){new InputNumber(inputNumbers[i]);})(i);
 		}
 	}
+}());
+if(!Util) function Util () {};
+
+Util.hasClass = function(el, className) {
+  return el.classList.contains(className);
+};
+
+Util.addClass = function(el, className) {
+  var classList = className.split(' ');
+  el.classList.add(classList[0]);
+  if (classList.length > 1) Util.addClass(el, classList.slice(1).join(' '));
+};
+
+Util.removeClass = function(el, className) {
+  var classList = className.split(' ');
+  el.classList.remove(classList[0]);
+  if (classList.length > 1) Util.removeClass(el, classList.slice(1).join(' '));
+};
+
+Util.setAttributes = function(el, attrs) {
+  for(var key in attrs) {
+    el.setAttribute(key, attrs[key]);
+  }
+};
+
+Util.getIndexInArray = function(array, el) {
+  return Array.prototype.indexOf.call(array, el);
+};
+
+
+// File#: _1_rating
+// Usage: codyhouse.co/license
+(function() {
+	var Rating = function(element) {
+		this.element = element;
+		this.icons = this.element.getElementsByClassName('js-rating__control')[0];
+		this.iconCode = this.icons.children[0].parentNode.innerHTML;
+		this.initialRating = [];
+		this.initialRatingElement = this.element.getElementsByClassName('js-rating__value')[0];
+		this.ratingItems;
+		this.selectedRatingItem;
+    this.readOnly = Util.hasClass(this.element, 'js-rating--read-only');
+		this.ratingMaxValue = 5;
+		this.getInitialRating();
+		this.initRatingHtml();
+	};
+
+	Rating.prototype.getInitialRating = function() {
+		// get the rating of the product
+		if(!this.initialRatingElement || !this.readOnly) {
+			this.initialRating = [0, false];
+			return;
+		}
+
+		var initialValue = Number(this.initialRatingElement.textContent);
+		if(isNaN(initialValue)) {
+			this.initialRating = [0, false];
+			return;
+		}
+
+		var floorNumber = Math.floor(initialValue);
+		this.initialRating[0] = (floorNumber < initialValue) ? floorNumber + 1 : floorNumber;
+		this.initialRating[1] = (floorNumber < initialValue) ? Math.round((initialValue - floorNumber)*100) : false;
+	};
+
+	Rating.prototype.initRatingHtml = function() {
+		//create the star elements
+		var iconsList = this.readOnly ? '<ul>' : '<ul role="radiogroup">';
+		
+		//if initial rating value is zero -> add a 'zero' item 
+		if(this.initialRating[0] == 0 && !this.initialRating[1]) {
+			iconsList = iconsList+ '<li class="rating__item--zero rating__item--checked"></li>';
+		}
+
+		// create the stars list 
+		for(var i = 0; i < this.ratingMaxValue; i++) { 
+			iconsList = iconsList + this.getStarHtml(i);
+		}
+		iconsList = iconsList + '</ul>';
+
+		// --default variation only - improve SR accessibility including a legend element 
+		if(!this.readOnly) {
+			var labelElement = this.element.getElementsByTagName('label');
+			if(labelElement.length > 0) {
+				var legendElement = '<legend class="'+labelElement[0].getAttribute('class')+'">'+labelElement[0].textContent+'</legend>';
+				iconsList = '<fieldset>'+legendElement+iconsList+'</fieldset>';
+				Util.addClass(labelElement[0], 'is-hidden');
+			}
+		}
+
+		this.icons.innerHTML = iconsList;
+		
+		//init object properties
+		this.ratingItems = this.icons.getElementsByClassName('js-rating__item');
+		this.selectedRatingItem = this.icons.getElementsByClassName('rating__item--checked')[0];
+
+		//show the stars
+		Util.removeClass(this.icons, 'rating__control--is-hidden');
+
+		//event listener
+		!this.readOnly && this.initRatingEvents();// rating vote enabled
+	};
+
+	Rating.prototype.getStarHtml = function(index) {
+		var listItem = '';
+		var checked = (index+1 == this.initialRating[0]) ? true : false,
+			itemClass = checked ? ' rating__item--checked' : '',
+			tabIndex = (checked || (this.initialRating[0] == 0 && !this.initialRating[1] && index == 0) ) ? 0 : -1,
+			showHalf = checked && this.initialRating[1] ? true : false,
+			iconWidth = showHalf ? ' rating__item--half': '';
+		if(!this.readOnly) {
+			listItem = '<li class="js-rating__item'+itemClass+iconWidth+'" role="radio" aria-label="'+(index+1)+'" aria-checked="'+checked+'" tabindex="'+tabIndex+'"><div class="rating__icon">'+this.iconCode+'</div></li>';
+		} else {
+			var starInner = showHalf ? '<div class="rating__icon">'+this.iconCode+'</div><div class="rating__icon rating__icon--inactive">'+this.iconCode+'</div>': '<div class="rating__icon">'+this.iconCode+'</div>';
+			listItem = '<li class="js-rating__item'+itemClass+iconWidth+'">'+starInner+'</li>';
+		}
+		return listItem;
+	};
+
+	Rating.prototype.initRatingEvents = function() {
+		var self = this;
+
+		//click on a star
+		this.icons.addEventListener('click', function(event){
+			var trigger = event.target.closest('.js-rating__item');
+			self.resetSelectedIcon(trigger);
+		});
+
+		//keyboard navigation -> select new star
+		this.icons.addEventListener('keydown', function(event){
+			if( event.keyCode && (event.keyCode == 39 || event.keyCode == 40 ) || event.key && (event.key.toLowerCase() == 'arrowright' || event.key.toLowerCase() == 'arrowdown') ) {
+				self.selectNewIcon('next'); //select next star on arrow right/down
+			} else if(event.keyCode && (event.keyCode == 37 || event.keyCode == 38 ) || event.key && (event.key.toLowerCase() == 'arrowleft' || event.key.toLowerCase() == 'arrowup')) {
+				self.selectNewIcon('prev'); //select prev star on arrow left/up
+			} else if(event.keyCode && event.keyCode == 32 || event.key && event.key == ' ') {
+				self.selectFocusIcon(); // select focused star on Space
+			}
+		});
+	};
+
+	Rating.prototype.selectNewIcon = function(direction) {
+		var index = Util.getIndexInArray(this.ratingItems, this.selectedRatingItem);
+		index = (direction == 'next') ? index + 1 : index - 1;
+		if(index < 0) index = this.ratingItems.length - 1;
+		if(index >= this.ratingItems.length) index = 0;	
+		this.resetSelectedIcon(this.ratingItems[index]);
+		this.ratingItems[index].focus();
+	};
+
+	Rating.prototype.selectFocusIcon = function(direction) {
+		this.resetSelectedIcon(document.activeElement);
+	};
+
+	Rating.prototype.resetSelectedIcon = function(trigger) {
+		if(!trigger) return;
+		Util.removeClass(this.selectedRatingItem, 'rating__item--checked');
+		Util.setAttributes(this.selectedRatingItem, {'aria-checked': false, 'tabindex': -1});
+		Util.addClass(trigger, 'rating__item--checked');
+		Util.setAttributes(trigger, {'aria-checked': true, 'tabindex': 0});
+		this.selectedRatingItem = trigger; 
+		// update select input value
+		var select = this.element.getElementsByTagName('select');
+		if(select.length > 0) {
+			select[0].value = trigger.getAttribute('aria-label');
+		}
+	};
+	
+	//initialize the Rating objects
+	var ratings = document.getElementsByClassName('js-rating');
+	if( ratings.length > 0 ) {
+		for( var i = 0; i < ratings.length; i++) {
+			(function(i){new Rating(ratings[i]);})(i);
+		}
+	};
 }());
 // File#: _1_read-more
 // Usage: codyhouse.co/license

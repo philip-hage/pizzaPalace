@@ -1,15 +1,11 @@
 <?php require APPROOT . '/views/includes/head.php'; ?>
 
 <!-- Nav Bar -->
-<header class="header position-relative js-header ">
+<header class="header position-sticky top-0 js-header" id="navbar">
     <div class="header__container container max-width-lg">
         <div class="header__logo">
             <a href="">
-                <svg width="104" height="30" viewBox="0 0 104 30">
-                    <title>Go to homepage</title>
-                    <path d="M37.54 24.08V3.72h4.92v16.37h8.47v4zM60.47 24.37a7.82 7.82 0 01-5.73-2.25 8.36 8.36 0 01-2-5.62 8.32 8.32 0 012.08-5.71 8 8 0 015.64-2.18 8.07 8.07 0 015.68 2.2 8.49 8.49 0 012 5.69 8.63 8.63 0 01-1.78 5.38 7.6 7.6 0 01-5.89 2.49zm0-3.67c2.42 0 2.73-3 2.73-4.23s-.31-4.26-2.73-4.26-2.79 3-2.79 4.26.32 4.23 2.82 4.23zM95.49 24.37a7.82 7.82 0 01-5.73-2.25 8.36 8.36 0 01-2-5.62 8.32 8.32 0 012.08-5.71 8.4 8.4 0 0111.31 0 8.43 8.43 0 012 5.69 8.6 8.6 0 01-1.77 5.38 7.6 7.6 0 01-5.89 2.51zm0-3.67c2.42 0 2.73-3 2.73-4.23s-.31-4.26-2.73-4.26-2.8 3-2.8 4.26.31 4.23 2.83 4.23zM77.66 30c-5.74 0-7-3.25-7.23-4.52l4.6-.26c.41.91 1.17 1.41 2.76 1.41a2.45 2.45 0 002.82-2.53v-2.68a7 7 0 01-1.7 1.75 6.12 6.12 0 01-5.85-.08c-2.41-1.37-3-4.25-3-6.66 0-.89.12-3.67 1.45-5.42a5.67 5.67 0 014.64-2.4c1.2 0 3 .25 4.46 2.82V8.81h4.85v15.33a5.2 5.2 0 01-2.12 4.32A9.92 9.92 0 0177.66 30zm.15-9.66c2.53 0 2.81-2.69 2.81-3.91s-.31-4-2.81-4-2.81 2.8-2.81 4 .27 3.91 2.81 3.91zM55.56 3.72h9.81v2.41h-9.81z" fill="var(--color-contrast-higher)" />
-                    <circle cx="15" cy="15" r="15" fill="var(--color-primary)" />
-                </svg>
+                <img class="logo-image" src="<?= URLROOT ?>public/img/logo.png" alt="Your Logo">
             </a>
         </div>
 
@@ -18,12 +14,41 @@
             <span>Menu</span>
         </button>
 
-        <nav class="header__nav js-header__nav" id="header-nav" role="navigation" aria-label="Main">
-            <div class="header__nav-inner">
-                <div class="header__label">Main menu</div>
-                <ul class="header__list">
-                    <button class="btn btn--primary header__nav-btn" aria-controls="drawer-cart-id">Show Cart</button>
-                </ul>
+        <nav style="display: flex;" class="header__nav js-header__nav" id="header-nav" role="navigation" aria-label="Main">
+            <div class="grid gap-sm">
+                <div class="header__nav-inner col-6@sm">
+                    <div class="header__label">Main menu</div>
+                    <ul class="header__list">
+                        <button class="btn btn--primary header__nav-btn" aria-controls="drawer-cart-id">Show Cart</button>
+                    </ul>
+                </div>
+
+                <button class="reset user-menu-control col-6@sm" aria-controls="user-menu" aria-label="Toggle user menu">
+                    <figure class="user-menu-control__img-wrapper radius-50%">
+                        <img class="user-menu-control__img" src="<?= URLROOT ?>public/img/businesscostumemalemanofficeusericon-1320196264882354682.png" alt="User picture">
+                    </figure>
+
+                    <svg class="icon icon--xxs margin-left-xxs" aria-hidden="true" viewBox="0 0 12 12">
+                        <polyline points="1 4 6 9 11 4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                    </svg>
+                </button>
+
+                <menu id="user-menu" class="menu js-menu">
+                    <li role="menuitem">
+                        <a class="menu__content js-menu__content" href="#0">
+                            <svg class="icon menu__icon" aria-hidden="true" viewBox="0 0 16 16">
+                                <circle cx="8" cy="3.5" r="3.5" />
+                                <path d="M14.747,14.15a6.995,6.995,0,0,0-13.494,0A1.428,1.428,0,0,0,1.5,15.4a1.531,1.531,0,0,0,1.209.6H13.288a1.531,1.531,0,0,0,1.209-.6A1.428,1.428,0,0,0,14.747,14.15Z" />
+                            </svg>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                    <li class="menu__separator" role="separator"></li>
+
+                    <li role="menuitem">
+                        <a class="menu__content js-menu__content" href="#0">Logout</a>
+                    </li>
+                </menu>
             </div>
         </nav>
     </div>
@@ -142,320 +167,69 @@
     </div>
 </div>
 
-<!-- filter for ingredients -->
-<section class="adv-filter padding-y-sm js-adv-filter">
-    <div class="container max-width-adaptive-sm" style="display: flex;">
-        <div class="grid gap-sm">
 
-            <div class="margin-bottom-md hide@md no-js:is-hidden">
-                <button class="btn btn--subtle width-100%" aria-controls="filter-panel">Show filters</button>
+<!-- Cards for showing the products -->
+<div class="container max-width-adaptive-sm" style="display: flex;">
+    <div class="grid gap-sm">
+        <?php foreach ($data['pizzas'] as $pizza) : ?>
+            <div class="card col-6@sm" data-category="pizzas">
+                <figure class="card__img-wrapper">
+                    <img src="<?= URLROOT . $pizza->productPath ?>" alt="Image">
+                </figure>
+                <div class="padding-xs">
+                    <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $pizza->productName ?></h3>
+
+                    <div class="margin-top-xs">
+                        <span class="prod-card__price">€<?= $pizza->productPrice ?></span>
+                    </div>
+                    <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
+                    <input type="hidden" class="productId" value="<?= $pizza->productId ?>">
+                    <input type="hidden" class="productName" value="<?= $pizza->productName ?>">
+                    <input type="hidden" class="productPrice" value="<?= $pizza->productPrice ?>">
+                    <input type="hidden" class="productPath" value="<?= $pizza->productPath ?>">
+                </div>
             </div>
+        <?php endforeach; ?>
+        <?php foreach ($data['drinks'] as $drink) : ?>
+            <div class="card col-6@sm" data-category="drinks" style="display: none;">
+                <figure class="card__img-wrapper">
+                    <img src="<?= URLROOT . $drink->productPath ?>" alt="Image">
+                </figure>
+                <div class="padding-xs">
+                    <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $drink->productName ?></h3>
 
-            <div class="col-6@md">
-                <aside id="filter-panel" class="sidebar sidebar--static@md js-sidebar" aria-labelledby="filter-panel-title">
-                    <div class="sidebar__panel max-width-100% width-100%">
-                        <header class="sidebar__header bg padding-y-sm padding-x-md border-bottom z-index-2">
-                            <h1 class="text-md text-truncate" id="filter-panel-title">Filters</h1>
-
-                            <button class="reset sidebar__close-btn js-sidebar__close-btn js-tab-focus">
-                                <svg class="icon icon--xs" viewBox="0 0 16 16">
-                                    <title>Close panel</title>
-                                    <g stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10">
-                                        <line x1="13.5" y1="2.5" x2="2.5" y2="13.5"></line>
-                                        <line x1="2.5" y1="2.5" x2="13.5" y2="13.5"></line>
-                                    </g>
-                                </svg>
-                            </button>
-                        </header>
-
-                        <form class="position-relative z-index-1 js-adv-filter__form">
-                            <div class="padding-md padding-0@md margin-bottom-sm@md">
-                                <button class="reset text-sm color-contrast-high text-underline cursor-pointer margin-bottom-sm text-xs@md js-adv-filter__reset js-tab-focus" type="reset">Reset all filters</button>
-
-                                <div class="search-input search-input--icon-left text-sm@md">
-                                    <input class="search-input__input form-control" type="search" name="search-products" id="search-products" placeholder="Try category 1..." aria-label="Search" data-filter="searchInput" aria-controls="adv-filter-gallery">
-
-                                    <button class="search-input__btn">
-                                        <svg class="icon" viewBox="0 0 20 20">
-                                            <title>Submit</title>
-                                            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                                                <circle cx="8" cy="8" r="6" />
-                                                <line x1="12.242" y1="12.242" x2="18" y2="18" />
-                                            </g>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <ul class="accordion js-accordion" data-animation="on" data-multi-items="on">
-                                <li class="accordion__item accordion__item--is-open js-accordion__item js-adv-filter__item" data-default-text="All" data-multi-select-text="{n} filters selected">
-                                    <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
-                                        <div>
-                                            <div class="text-sm@md">Checkboxes</div>
-                                            <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">All</span></div>
-                                        </div>
-
-                                        <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
-                                            <g class="icon__group" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="3" y1="3" x2="17" y2="17" />
-                                                <line x1="17" y1="3" x2="3" y2="17" />
-                                            </g>
-                                        </svg>
-                                    </button>
-
-                                    <div class="accordion__panel js-accordion__panel">
-                                        <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md">
-                                            <div class="adv-filter__checkbox-list flex flex-column gap-xxxs js-read-more" aria-controls="adv-filter-gallery" data-btn-labels="Show More, Show Less" data-ellipsis="off" data-btn-class="reset text-sm text-underline cursor-pointer margin-top-xs js-tab-focus">
-                                                <!-- 👆 aria-controls -> filter plugin -->
-                                                <!-- 👆 data-btn-labels, data-ellipsis, data-btn-class -> read more component -->
-                                                <div>
-                                                    <input class="checkbox" type="checkbox" id="checkbox-primary" data-filter="bg-primary">
-                                                    <label for="checkbox-primary">Primary</label>
-                                                </div>
-
-                                                <div>
-                                                    <input class="checkbox" type="checkbox" id="checkbox-accent" data-filter="bg-accent">
-                                                    <label for="checkbox-accent">Accent</label>
-                                                </div>
-
-                                                <div class="js-read-more__content">
-                                                    <div class="flex flex-column gap-xxxs">
-                                                        <div>
-                                                            <input class="checkbox" type="checkbox" id="checkbox-contrast-lower" data-filter="bg-contrast-lower">
-                                                            <label for="checkbox-contrast-lower">ContrastLower</label>
-                                                        </div>
-
-                                                        <div>
-                                                            <input class="checkbox" type="checkbox" id="checkbox-contrast-higher" data-filter="bg-contrast-higher">
-                                                            <label for="checkbox-contrast-higher">ContrastHigher</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="accordion__item js-accordion__item js-adv-filter__item" data-default-text="All">
-                                    <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
-                                        <div>
-                                            <div class="text-sm@md">Radio Buttons</div>
-                                            <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">All</span></div>
-                                        </div>
-
-                                        <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
-                                            <g class="icon__group" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="3" y1="3" x2="17" y2="17" />
-                                                <line x1="17" y1="3" x2="3" y2="17" />
-                                            </g>
-                                        </svg>
-                                    </button>
-
-                                    <div class="accordion__panel js-accordion__panel">
-                                        <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md">
-                                            <ul class="adv-filter__radio-list flex flex-column gap-xxxs" aria-controls="adv-filter-gallery">
-                                                <li>
-                                                    <input class="radio" type="radio" name="radio-filter" id="radio-all" data-filter="*" checked>
-                                                    <label for="radio-all">All</label>
-                                                </li>
-
-                                                <li>
-                                                    <input class="radio" type="radio" name="radio-filter" id="radio-category-1" data-filter="category-1">
-                                                    <label for="radio-category-1">Category 1</label>
-                                                </li>
-
-                                                <li>
-                                                    <input class="radio" type="radio" name="radio-filter" id="radio-category-2" data-filter="category-2">
-                                                    <label for="radio-category-2">Category 2</label>
-                                                </li>
-
-                                                <li>
-                                                    <input class="radio" type="radio" name="radio-filter" id="radio-category-3" data-filter="category-3">
-                                                    <label for="radio-category-3">Category 3</label>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="accordion__item accordion__item--is-open js-accordion__item js-adv-filter__item" data-number-format="${n}">
-                                    <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
-                                        <div>
-                                            <div class="text-sm@md">Input Range</div>
-                                            <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">$0 - $100</span></div>
-                                        </div>
-
-                                        <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
-                                            <g class="icon__group" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="3" y1="3" x2="17" y2="17" />
-                                                <line x1="17" y1="3" x2="3" y2="17" />
-                                            </g>
-                                        </svg>
-                                    </button>
-
-                                    <div class="accordion__panel js-accordion__panel">
-                                        <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md flex justify-center">
-                                            <div class="slider slider--multi-value js-slider js-filter__custom-control" aria-controls="adv-filter-gallery" data-filter="priceRange">
-                                                <div class="slider__range">
-                                                    <label class="sr-only" for="slider-min-value">Slider min value</label>
-                                                    <input class="slider__input" type="range" id="slider-min-value" name="slider-min-value" min="0" max="100" step="1" value="0">
-                                                </div>
-
-                                                <div class="slider__range">
-                                                    <label class="sr-only" for="slider-max-value">Slider max value</label>
-                                                    <input class="slider__input" type="range" id="slider-max-value" name="slider-max-value" min="0" max="100" step="1" value="100">
-                                                </div>
-
-                                                <div class="margin-top-xs text-center text-sm" aria-hidden="true">
-                                                    <span class="slider__value">$<span class="js-slider__value">0</span> - $<span class="js-slider__value">100</span></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="accordion__item js-accordion__item js-adv-filter__item" data-default-text="All" data-multi-select-text="{n} filters selected" data-number-format="{n}+">
-                                    <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
-                                        <div>
-                                            <div class="text-sm@md">Input Number</div>
-                                            <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">All</span></div>
-                                        </div>
-
-                                        <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
-                                            <g class="icon__group" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="3" y1="3" x2="17" y2="17" />
-                                                <line x1="17" y1="3" x2="3" y2="17" />
-                                            </g>
-                                        </svg>
-                                    </button>
-
-                                    <div class="accordion__panel js-accordion__panel">
-                                        <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md">
-                                            <div class="flex justify-between items-center">
-                                                <label class="text-sm" for="index-value">Quantity</label>
-
-                                                <div class="number-input number-input--v2 js-number-input js-filter__custom-control" aria-controls="adv-filter-gallery" data-filter="indexValue">
-                                                    <input class="form-control text-sm@md js-number-input__value" type="number" name="index-value" id="index-value" min="0" max="10" step="1" value="0">
-
-                                                    <button class="reset number-input__btn number-input__btn--plus js-number-input__btn" aria-label="Increase Number">
-                                                        <svg class="icon" viewBox="0 0 12 12" aria-hidden="true">
-                                                            <path d="M11,5H7V1A1,1,0,0,0,5,1V5H1A1,1,0,0,0,1,7H5v4a1,1,0,0,0,2,0V7h4a1,1,0,0,0,0-2Z" />
-                                                        </svg>
-                                                    </button>
-
-                                                    <button class="reset number-input__btn number-input__btn--minus js-number-input__btn" aria-label="Decrease Number">
-                                                        <svg class="icon" viewBox="0 0 12 12" aria-hidden="true">
-                                                            <path d="M11,7H1A1,1,0,0,1,1,5H11a1,1,0,0,1,0,2Z" />
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="accordion__item accordion__item--is-open position-relative z-index-2 js-accordion__item js-adv-filter__item">
-                                    <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
-                                        <div>
-                                            <div class="text-sm@md">Select</div>
-                                            <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">All</span></div>
-                                        </div>
-
-                                        <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
-                                            <g class="icon__group" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="3" y1="3" x2="17" y2="17" />
-                                                <line x1="17" y1="3" x2="3" y2="17" />
-                                            </g>
-                                        </svg>
-                                    </button>
-
-                                    <div class="accordion__panel js-accordion__panel">
-                                        <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md flex">
-                                            <label class="sr-only" for="select-filter-option">Select Option:</label>
-
-                                            <div class="select width-100% js-select" data-trigger-class="btn btn--subtle flex-grow">
-                                                <!-- data-trigger-class -> custom select component 👆 -->
-                                                <select name="select-filter-option" id="select-filter-option" aria-controls="adv-filter-gallery" data-filter="true">
-                                                    <option value="*" selected>All</option>
-                                                    <option value="true">True</option>
-                                                    <option value="false">False</option>
-                                                </select>
-
-                                                <svg class="icon icon--xxs margin-left-xxs" aria-hidden="true" viewBox="0 0 12 12">
-                                                    <path d="M10.947,3.276A.5.5,0,0,0,10.5,3h-9a.5.5,0,0,0-.4.8l4.5,6a.5.5,0,0,0,.8,0l4.5-6A.5.5,0,0,0,10.947,3.276Z" />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </form>
+                    <div class="margin-top-xs">
+                        <span class="prod-card__price">€<?= $drink->productPrice ?></span>
                     </div>
-                </aside>
+                    <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
+                    <input type="hidden" class="productId" value="<?= $drink->productId ?>">
+                    <input type="hidden" class="productName" value="<?= $drink->productName ?>">
+                    <input type="hidden" class="productPrice" value="<?= $drink->productPrice ?>">
+                    <input type="hidden" class="productPath" value="<?= $drink->productPath ?>">
+                </div>
             </div>
-        </div>
-        <!-- Cards for showing the products -->
-        <div class="grid gap-sm">
-            <?php foreach ($data['pizzas'] as $pizza) : ?>
-                <div class="card col-6@sm" data-category="pizzas">
-                    <figure class="card__img-wrapper">
-                        <img src="<?= URLROOT . $pizza->productPath ?>" alt="Image">
-                    </figure>
-                    <div class="padding-xs">
-                        <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $pizza->productName ?></h3>
+        <?php endforeach; ?>
+        <?php foreach ($data['snacks'] as $snack) : ?>
+            <div class="card col-6@sm" data-category="snacks" style="display: none;">
+                <figure class="card__img-wrapper">
+                    <img src="<?= URLROOT . $snack->productPath ?>" alt="Image">
+                </figure>
+                <div class="padding-xs">
+                    <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $snack->productName ?></h3>
 
-                        <div class="margin-top-xs">
-                            <span class="prod-card__price">€<?= $pizza->productPrice ?></span>
-                        </div>
-                        <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
-                        <input type="hidden" class="productId" value="<?= $pizza->productId ?>">
-                        <input type="hidden" class="productName" value="<?= $pizza->productName ?>">
-                        <input type="hidden" class="productPrice" value="<?= $pizza->productPrice ?>">
-                        <input type="hidden" class="productPath" value="<?= $pizza->productPath ?>">
+                    <div class="margin-top-xs">
+                        <span class="prod-card__price">€<?= $snack->productPrice ?></span>
                     </div>
+                    <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
+                    <input type="hidden" class="productId" value="<?= $snack->productId ?>">
+                    <input type="hidden" class="productName" value="<?= $snack->productName ?>">
+                    <input type="hidden" class="productPrice" value="<?= $snack->productPrice ?>">
+                    <input type="hidden" class="productPath" value="<?= $snack->productPath ?>">
                 </div>
-            <?php endforeach; ?>
-            <?php foreach ($data['drinks'] as $drink) : ?>
-                <div class="card col-6@sm" data-category="drinks" style="display: none;">
-                    <figure class="card__img-wrapper">
-                        <img src="<?= URLROOT . $drink->productPath ?>" alt="Image">
-                    </figure>
-                    <div class="padding-xs">
-                        <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $drink->productName ?></h3>
-
-                        <div class="margin-top-xs">
-                            <span class="prod-card__price">€<?= $drink->productPrice ?></span>
-                        </div>
-                        <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
-                        <input type="hidden" class="productId" value="<?= $drink->productId ?>">
-                        <input type="hidden" class="productName" value="<?= $drink->productName ?>">
-                        <input type="hidden" class="productPrice" value="<?= $drink->productPrice ?>">
-                        <input type="hidden" class="productPath" value="<?= $drink->productPath ?>">
-                    </div>
-                </div>
-            <?php endforeach; ?>
-            <?php foreach ($data['snacks'] as $snack) : ?>
-                <div class="card col-6@sm" data-category="snacks" style="display: none;">
-                    <figure class="card__img-wrapper">
-                        <img src="<?= URLROOT . $snack->productPath ?>" alt="Image">
-                    </figure>
-                    <div class="padding-xs">
-                        <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $snack->productName ?></h3>
-
-                        <div class="margin-top-xs">
-                            <span class="prod-card__price">€<?= $snack->productPrice ?></span>
-                        </div>
-                        <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
-                        <input type="hidden" class="productId" value="<?= $snack->productId ?>">
-                        <input type="hidden" class="productName" value="<?= $snack->productName ?>">
-                        <input type="hidden" class="productPrice" value="<?= $snack->productPrice ?>">
-                        <input type="hidden" class="productPath" value="<?= $snack->productPath ?>">
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+            </div>
+        <?php endforeach; ?>
     </div>
-</section>
+</div>
 
 <!-- Basket -->
 <div class="drawer dr-cart js-drawer" id="drawer-cart-id">
@@ -534,8 +308,39 @@
     </ol>
 </nav>
 
+<section>
+    <div class="container max-width-adaptive-lg">
+        <div class="margin-bottom-lg">
+            <h1 class="text-center">Hear it from our customers.</h1>
+        </div>
+        <div class="grid gap-sm">
+            <?php foreach ($data['reviews'] as $review) : ?>
+            <div class="bg-contrast-lower bg-opacity-50% radius-md padding-md text-center flex@md flex-column@md col-4@md">
+                <div class="rating rating--read-only js-rating js-rating--read-only margin-bottom-sm">
+                    <p class="sr-only">The rating of this product is <span class="rating__value js-rating__value"><?= $review->reviewRating ?></span> out of 5</p>
+
+                    <div class="rating__control rating__control--is-hidden js-rating__control">
+                        <svg width="24" height="24" viewBox="0 0 24 24">
+                            <polygon points="12 1.489 15.09 7.751 22 8.755 17 13.629 18.18 20.511 12 17.261 5.82 20.511 7 13.629 2 8.755 8.91 7.751 12 1.489" fill="currentColor" />
+                        </svg>
+                    </div>
+                </div>
+
+                <blockquote class="line-height-md margin-bottom-md"><?= $review->reviewText ?></blockquote>
+
+                <footer class="flex flex-column items-center margin-top-auto@md">
+                    <cite class="text-sm">
+                        <strong><?= $review->customerFirstName . " " . $review->customerLastName ?></strong>
+                    </cite>
+                </footer>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<br>
 <!-- Footer -->
-<footer class="main-footer position-relative z-index-1 padding-top-xl">
+<footer class="main-footer position-relative z-index-1 padding-top-xl footer">
     <div class="container max-width-lg">
         <div class="grid gap-lg">
             <div class="col-3@lg order-2@lg text-right@lg">
@@ -640,5 +445,6 @@
 </footer>
 
 <script src="<?= URLROOT; ?>public/js/app.js"></script>
+
 
 <?php require APPROOT . '/views/includes/footer.php'; ?>
