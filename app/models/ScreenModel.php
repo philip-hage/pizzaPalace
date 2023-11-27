@@ -1,0 +1,104 @@
+<?php
+class ScreenModel
+{
+    private $db;
+
+    public function __construct()
+    {
+        $this->db = new Database();
+    }
+
+    public function ScreenByEntityId($entityId)
+    {
+        $this->db->query("SELECT screenId, screenEntityId, screenEntity, screenCreateDate FROM screens WHERE screenEntityId = :entityId");
+        $this->db->bind(':entityId', $entityId);
+        return $this->db->single();
+    }
+
+    public function getScreenByEntityId($entityId)
+    {
+        $this->db->query("SELECT screenId, screenEntityId, screenEntity, screenCreateDate FROM screens WHERE screenEntityId = :entityId AND screenIsActive = 1");
+        $this->db->bind(':entityId', $entityId);
+        $screenData = $this->db->single();
+
+        return $screenData;
+    }
+
+    public function getScreenImage($entityId)
+    {
+        $screenData = $this->getScreenByEntityId($entityId);
+
+        if ($screenData) {
+            $screenId = $screenData->screenId;
+            $screenCreateDate = date('Ymd', $screenData->screenCreateDate);
+
+            $imagePath = IMAGEROOT . $screenCreateDate . '/' . $screenId .'.jpg'; // Adjust the file extension as needed
+
+
+            // if (file_exists($imagePath)) {
+            //     echo 'Hoi';exit;
+                return $imagePath;
+            // } else {
+            //     // Handle the case when the image file doesn't exist
+            //     echo 'doei';exit;
+            //     return null;
+            // }
+        } else {
+            // Handle the case when the screen data is not found
+            return null;
+        }
+    }
+
+
+    public function insertScreenImages($screenId, $entityId, $entity, $scope = NULL)
+    {
+        global $var;
+
+        // Check if a screen with the given entityId already exists
+        $existingScreen = $this->ScreenByEntityId($entityId);
+
+        if ($existingScreen) {
+            // Update the existing screen to isActive = 0
+            $this->updateScreenIsActive($existingScreen->screenId, 0);
+        }
+
+        // Insert the new screen
+        $this->db->query("INSERT INTO screens (screenId,
+                                               screenEntityId,
+                                               screenEntity,
+                                               screenScope,
+                                               screenCreateDate,
+                                               screenIsActive)
+                           VALUES (:id, :screenEntityId, :screenEntity, :screenScope, :screenCreateDate, 1)");
+        $this->db->bind(':id', $screenId);
+        $this->db->bind(':screenEntityId', $entityId);
+        $this->db->bind(':screenEntity', $entity);
+        $this->db->bind(':screenScope', $scope);
+        $this->db->bind(':screenCreateDate', $var['timestamp']);
+        $this->db->execute();
+    }
+
+    public function getScreenDataById($entityId, $entity, $scope)
+    {
+        $this->db->query("SELECT screenId, screenEntity, screenCreateDate FROM screens WHERE screenEntityId = :screenEntityId AND screenEntity = :screenEntity AND screenScope = :screenScope AND screenIsActive = 1");
+        $this->db->bind(':screenEntityId', $entityId);
+        $this->db->bind(':screenEntity', $entity);
+        $this->db->bind(':screenScope', $scope);
+        return $this->db->single();
+    }
+
+    public function deleteScreen($screenId)
+    {
+        $this->db->query("UPDATE screens SET screenIsActive = 0 WHERE screenId = :screenId");
+        $this->db->bind(':screenId', $screenId);
+        $this->db->execute();
+    }
+
+    public function updateScreenIsActive($screenId, $isActive)
+    {
+        $this->db->query("UPDATE screens SET screenIsActive = :isActive WHERE screenId = :screenId");
+        $this->db->bind(':isActive', $isActive);
+        $this->db->bind(':screenId', $screenId);
+        $this->db->execute();
+    }
+}

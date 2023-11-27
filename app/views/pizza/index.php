@@ -83,8 +83,6 @@
     </div>
 </div>
 
-<h3 class="text-center"><?= $data['title'] ?></h3>
-
 <!-- Slideshow -->
 <div class="slideshow-pm padding-y-md js-slideshow-pm" data-swipe="on" data-pm-nav="on">
     <p class="sr-only">Slideshow items</p>
@@ -170,64 +168,80 @@
 
 <!-- Cards for showing the products -->
 <div class="container max-width-adaptive-sm" style="display: flex;">
-    <div class="grid gap-sm">
-        <?php foreach ($data['pizzas'] as $pizza) : ?>
-            <div class="card col-6@sm" data-category="pizzas">
-                <figure class="card__img-wrapper">
-                    <img src="<?= URLROOT . $pizza->productPath ?>" alt="Image">
-                </figure>
-                <div class="padding-xs">
-                    <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $pizza->productName ?></h3>
-
-                    <div class="margin-top-xs">
-                        <span class="prod-card__price">€<?= $pizza->productPrice ?></span>
+    <div class="margin-bottom-sm">
+        <div class="grid gap-xxs">
+            <?php foreach ($data['pizzas'] as $pizza) : ?>
+                <div class="card col-6@sm" data-category="pizzas">
+                    <figure class="card__img-wrapper">
+                        <?php if ($pizza->imagePath) : ?>
+                            <img src="<?= $pizza->imagePath ?>" alt="<?= $pizza->productName ?> Image">
+                        <?php else : ?>
+                            <!-- Add a default image or placeholder if the imagePath is not available -->
+                            <img src="<?= URLROOT . '/path/to/default/image.jpg' ?>" alt="Default Image">
+                        <?php endif; ?>
+                    </figure>
+                    <div class="padding-xs">
+                        <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $pizza->productName ?></h3>
+                        <div class="margin-top-xs">
+                            <span class="prod-card__price">€<?= $pizza->productPrice ?></span>
+                        </div>
+                        <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
+                        <input type="hidden" class="productId" value="<?= $pizza->productId ?>">
+                        <input type="hidden" class="productName" value="<?= $pizza->productName ?>">
+                        <input type="hidden" class="productPrice" value="<?= $pizza->productPrice ?>">
+                        <input type="hidden" class="imagePath" value="<?= $pizza->imagePath ?>">
                     </div>
-                    <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
-                    <input type="hidden" class="productId" value="<?= $pizza->productId ?>">
-                    <input type="hidden" class="productName" value="<?= $pizza->productName ?>">
-                    <input type="hidden" class="productPrice" value="<?= $pizza->productPrice ?>">
-                    <input type="hidden" class="productPath" value="<?= $pizza->productPath ?>">
                 </div>
-            </div>
-        <?php endforeach; ?>
-        <?php foreach ($data['drinks'] as $drink) : ?>
-            <div class="card col-6@sm" data-category="drinks" style="display: none;">
-                <figure class="card__img-wrapper">
-                    <img src="<?= URLROOT . $drink->productPath ?>" alt="Image">
-                </figure>
-                <div class="padding-xs">
-                    <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $drink->productName ?></h3>
+            <?php endforeach; ?>
+            <?php foreach ($data['drinks'] as $drink) : ?>
+                <div class="card col-6@sm" data-category="drinks" style="display: none;">
+                    <figure class="card__img-wrapper">
+                        <?php if ($drink->imagePath) : ?>
+                            <img src="<?= $drink->imagePath ?>" alt="<?= $drink->productName ?> Image">
+                        <?php else : ?>
+                            <!-- Add a default image or placeholder if the imagePath is not available -->
+                            <img src="<?= URLROOT . '/path/to/default/image.jpg' ?>" alt="Default Image">
+                        <?php endif; ?>
+                    </figure>
+                    <div class="padding-xs">
+                        <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $drink->productName ?></h3>
 
-                    <div class="margin-top-xs">
-                        <span class="prod-card__price">€<?= $drink->productPrice ?></span>
+                        <div class="margin-top-xs">
+                            <span class="prod-card__price">€<?= $drink->productPrice ?></span>
+                        </div>
+                        <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
+                        <input type="hidden" class="productId" value="<?= $drink->productId ?>">
+                        <input type="hidden" class="productName" value="<?= $drink->productName ?>">
+                        <input type="hidden" class="productPrice" value="<?= $drink->productPrice ?>">
+                        <input type="hidden" class="productPath" value="<?= $drink->productPath ?>">
                     </div>
-                    <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
-                    <input type="hidden" class="productId" value="<?= $drink->productId ?>">
-                    <input type="hidden" class="productName" value="<?= $drink->productName ?>">
-                    <input type="hidden" class="productPrice" value="<?= $drink->productPrice ?>">
-                    <input type="hidden" class="productPath" value="<?= $drink->productPath ?>">
                 </div>
-            </div>
-        <?php endforeach; ?>
-        <?php foreach ($data['snacks'] as $snack) : ?>
-            <div class="card col-6@sm" data-category="snacks" style="display: none;">
-                <figure class="card__img-wrapper">
-                    <img src="<?= URLROOT . $snack->productPath ?>" alt="Image">
-                </figure>
-                <div class="padding-xs">
-                    <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $snack->productName ?></h3>
+            <?php endforeach; ?>
+            <?php foreach ($data['snacks'] as $snack) : ?>
+                <div class="card col-6@sm" data-category="snacks" style="display: none;">
+                    <figure class="card__img-wrapper">
+                        <?php if ($snack->imagePath) : ?>
+                            <img src="<?= $snack->imagePath ?>" alt="<?= $snack->productName ?> Image">
+                        <?php else : ?>
+                            <!-- Add a default image or placeholder if the imagePath is not available -->
+                            <img src="<?= URLROOT . '/path/to/default/image.jpg' ?>" alt="Default Image">
+                        <?php endif; ?>
+                    </figure>
+                    <div class="padding-xs">
+                        <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $snack->productName ?></h3>
 
-                    <div class="margin-top-xs">
-                        <span class="prod-card__price">€<?= $snack->productPrice ?></span>
+                        <div class="margin-top-xs">
+                            <span class="prod-card__price">€<?= $snack->productPrice ?></span>
+                        </div>
+                        <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
+                        <input type="hidden" class="productId" value="<?= $snack->productId ?>">
+                        <input type="hidden" class="productName" value="<?= $snack->productName ?>">
+                        <input type="hidden" class="productPrice" value="<?= $snack->productPrice ?>">
+                        <input type="hidden" class="productPath" value="<?= $snack->productPath ?>">
                     </div>
-                    <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
-                    <input type="hidden" class="productId" value="<?= $snack->productId ?>">
-                    <input type="hidden" class="productName" value="<?= $snack->productName ?>">
-                    <input type="hidden" class="productPrice" value="<?= $snack->productPrice ?>">
-                    <input type="hidden" class="productPath" value="<?= $snack->productPath ?>">
                 </div>
-            </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
+        </div>
     </div>
 </div>
 
@@ -315,25 +329,25 @@
         </div>
         <div class="grid gap-sm">
             <?php foreach ($data['reviews'] as $review) : ?>
-            <div class="bg-contrast-lower bg-opacity-50% radius-md padding-md text-center flex@md flex-column@md col-4@md">
-                <div class="rating rating--read-only js-rating js-rating--read-only margin-bottom-sm">
-                    <p class="sr-only">The rating of this product is <span class="rating__value js-rating__value"><?= $review->reviewRating ?></span> out of 5</p>
+                <div class="bg-contrast-lower bg-opacity-50% radius-md padding-md text-center flex@md flex-column@md col-4@md">
+                    <div class="rating rating--read-only js-rating js-rating--read-only margin-bottom-sm">
+                        <p class="sr-only">The rating of this product is <span class="rating__value js-rating__value"><?= $review->reviewRating ?></span> out of 5</p>
 
-                    <div class="rating__control rating__control--is-hidden js-rating__control">
-                        <svg width="24" height="24" viewBox="0 0 24 24">
-                            <polygon points="12 1.489 15.09 7.751 22 8.755 17 13.629 18.18 20.511 12 17.261 5.82 20.511 7 13.629 2 8.755 8.91 7.751 12 1.489" fill="currentColor" />
-                        </svg>
+                        <div class="rating__control rating__control--is-hidden js-rating__control">
+                            <svg width="24" height="24" viewBox="0 0 24 24">
+                                <polygon points="12 1.489 15.09 7.751 22 8.755 17 13.629 18.18 20.511 12 17.261 5.82 20.511 7 13.629 2 8.755 8.91 7.751 12 1.489" fill="currentColor" />
+                            </svg>
+                        </div>
                     </div>
+
+                    <blockquote class="line-height-md margin-bottom-md"><?= $review->reviewText ?></blockquote>
+
+                    <footer class="flex flex-column items-center margin-top-auto@md">
+                        <cite class="text-sm">
+                            <strong><?= $review->customerFirstName . " " . $review->customerLastName ?></strong>
+                        </cite>
+                    </footer>
                 </div>
-
-                <blockquote class="line-height-md margin-bottom-md"><?= $review->reviewText ?></blockquote>
-
-                <footer class="flex flex-column items-center margin-top-auto@md">
-                    <cite class="text-sm">
-                        <strong><?= $review->customerFirstName . " " . $review->customerLastName ?></strong>
-                    </cite>
-                </footer>
-            </div>
             <?php endforeach; ?>
         </div>
     </div>

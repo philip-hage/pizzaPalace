@@ -17,7 +17,8 @@ class PizzaModel
                                  productType,
                                  productPath 
                                  FROM products 
-                                 WHERE productType = 'pizza' AND productIsActive = 1");
+                                 WHERE productType = 'pizza' AND productIsActive = 1
+                                 ORDER BY productName ASC");
         return $this->db->resultSet();
     }
 
@@ -50,10 +51,7 @@ class PizzaModel
         $this->db->query("SELECT promotionId,
                                  promotionName,
                                  promotionStartDate,
-                                 promotionEndDate,
-                                 promotionPathA,
-                                 promotionPathB,
-                                 promotionPathC
+                                 promotionEndDate
                                  FROM promotions
                                  WHERE promotionIsActive = 1");
         return $this->db->resultSet();
@@ -63,14 +61,11 @@ class PizzaModel
     {
         $this->db->query("SELECT r.reviewId,
                                  r.reviewCustomerId,
-                                 r.reviewOrderId,
                                  r.reviewRating,
-                                 r.reviewText,
                                  c.customerFirstName,
                                  c.customerLastName
                                  FROM reviews as r
                                  INNER JOIN customers as c ON r.reviewCustomerId = c.customerId
-                                 INNER JOIN orders as o ON r.reviewOrderId = o.orderId
                                  WHERE reviewIsActive = 1");
         return $this->db->resultSet();
     }

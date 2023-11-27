@@ -38,16 +38,16 @@ document.addEventListener("DOMContentLoaded", function () {
       const productId = card.querySelector(".productId").value;
       const productName = card.querySelector(".productName").value;
       const productPrice = card.querySelector(".productPrice").value;
-      const productPath = card.querySelector(".productPath").value;
+      const imagePath = card.querySelector(".imagePath").value;
 
       openToast(productName);
 
-      addToCart(productId, productName, productPrice, productPath);
+      addToCart(productId, productName, productPrice, imagePath);
       updateSelectedProducts();
     });
   });
 
-  function addToCart(productId, productName, productPrice, productPath) {
+  function addToCart(productId, productName, productPrice, imagePath) {
     const existingProduct = productCart.find((item) => item.id === productId);
     if (existingProduct) {
       // If it's in the cart, increase its quantity
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
         id: productId,
         name: productName,
         price: productPrice,
-        path: productPath,
+        path: imagePath,
         quantity: 1,
       });
     }
@@ -104,8 +104,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const listItem = document.createElement("li");
         listItem.classList.add("dr-cart__product");
 
+        console.log(product.path);
+
         // Create an <img> element for pizza image
-        const imageUrl = `http://localhost/pizzapalace/${product.path}`;
+        const imageUrl = product.path;
         const productImage = document.createElement("img");
         productImage.classList.add("dr-cart__img");
         productImage.src = imageUrl;
