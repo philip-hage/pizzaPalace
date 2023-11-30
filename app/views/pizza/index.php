@@ -83,167 +83,287 @@
     </div>
 </div>
 
-<!-- Slideshow -->
-<div class="slideshow-pm padding-y-md js-slideshow-pm" data-swipe="on" data-pm-nav="on">
-    <p class="sr-only">Slideshow items</p>
+<section class="adv-filter padding-y-lg js-adv-filter">
+    <div class="container max-width-adaptive-lg">
+        <div class="margin-bottom-md hide@md no-js:is-hidden">
+            <button class="btn btn--subtle width-100%" aria-controls="filter-panel">Show filters</button>
+        </div>
 
-    <div class="slideshow-pm__content">
-        <ul class="slideshow-pm__list js-slideshow-pm__list">
+        <div class="flex@md">
+            <aside id="filter-panel" class="sidebar sidebar--static@md js-sidebar" aria-labelledby="filter-panel-title">
+                <div class="sidebar__panel max-width-100% width-100%">
+                    <header class="sidebar__header bg padding-y-sm padding-x-md border-bottom z-index-2">
+                        <h1 class="text-md text-truncate" id="filter-panel-title">Filters</h1>
 
-            <?php foreach ($data['promotions'] as $promotion) : ?>
-                <li class="slideshow-pm__item js-slideshow-pm__item">
-                    <figure class="aspect-ratio-16:9 width-100%">
-                        <img src="<?= URLROOT . $promotion->promotionPathA ?>" alt="Image">
-                    </figure>
-                </li>
-            <?php endforeach ?>
-        </ul>
+                        <button class="reset sidebar__close-btn js-sidebar__close-btn js-tab-focus">
+                            <svg class="icon icon--xs" viewBox="0 0 16 16">
+                                <title>Close panel</title>
+                                <g stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10">
+                                    <line x1="13.5" y1="2.5" x2="2.5" y2="13.5"></line>
+                                    <line x1="2.5" y1="2.5" x2="13.5" y2="13.5"></line>
+                                </g>
+                            </svg>
+                        </button>
+                    </header>
 
-        <ul>
-            <li class="slideshow-pm__control-wrapper js-slideshow-pm__control-wrapper">
-                <button class="slideshow-pm__control reset js-tab-focus">
-                    <svg class="icon" viewBox="0 0 30 30">
-                        <title>Show previous slide</title>
-                        <g fill="currentColor">
-                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 1L9 15l10 14"></path>
-                        </g>
-                    </svg>
-                </button>
-            </li>
+                    <form class="position-relative z-index-1 js-adv-filter__form">
+                        <div class="padding-md padding-0@md margin-bottom-sm@md">
+                            <button class="reset text-sm color-contrast-high text-underline cursor-pointer margin-bottom-sm text-xs@md js-adv-filter__reset js-tab-focus" type="reset">Reset all filters</button>
 
-            <li class="slideshow-pm__control-wrapper js-slideshow-pm__control-wrapper">
-                <button class="slideshow-pm__control reset js-tab-focus">
-                    <svg class="icon" viewBox="0 0 30 30">
-                        <title>Show next slide</title>
-                        <g fill="currentColor">
-                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 1l10 14-10 14"></path>
-                        </g>
-                    </svg>
-                </button>
-            </li>
-        </ul>
-    </div>
-</div>
+                            <div class="search-input search-input--icon-left text-sm@md">
+                                <input class="search-input__input form-control" type="search" name="search-products" id="search-products" placeholder="Try category 1..." aria-label="Search" data-filter="searchInput" aria-controls="adv-filter-gallery">
 
-<!-- Filter for selecting pizzas, drinks and snacks -->
-
-<div class="filter-nav filter-nav--v1 filter-nav--expanded js-filter-nav">
-    <button class="reset btn btn--subtle is-hidden js-filter-nav__control" aria-label="Select a filter option" aria-controls="filter-nav">
-        <span class="js-filter-nav__placeholder" aria-hidden="true">All Products</span>
-
-        <svg class="icon icon--xxs margin-left-xxs" aria-hidden="true" viewBox="0 0 12 12">
-            <polyline points="1 4 6 9 11 4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-        </svg>
-    </button>
-    <div class="filter-nav__wrapper js-filter-nav__wrapper" id="filter-nav">
-        <nav class="filter-nav__nav justify-center js-filter-nav__nav">
-            <ul class="filter-nav__list js-filter-nav__list" aria-controls="product-gallery">
-                <li class="filter-nav__item">
-                    <button class="reset filter-nav__btn js-filter-nav__btn js-tab-focus" aria-current="true" data-filter="pizzas">Pizzas</button>
-                </li>
-
-                <li class="filter-nav__item">
-                    <button class="reset filter-nav__btn js-filter-nav__btn js-tab-focus" data-filter="drinks">Drinks</button>
-                </li>
-
-                <li class="filter-nav__item">
-                    <button class="reset filter-nav__btn js-filter-nav__btn js-tab-focus" data-filter="snacks">Snacks</button>
-                </li>
-                <li class="filter-nav__marker js-filter-nav__marker" aria-hidden="true"></li>
-            </ul>
-
-            <button class="reset filter-nav__close-btn is-hidden js-filter-nav__close-btn js-tab-focus" aria-label="Close navigation">
-                <svg class="icon icon--xs" viewBox="0 0 16 16">
-                    <title>Close drawer panel</title>
-                    <g stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10">
-                        <line x1="13.5" y1="2.5" x2="2.5" y2="13.5"></line>
-                        <line x1="2.5" y1="2.5" x2="13.5" y2="13.5"></line>
-                    </g>
-                </svg>
-            </button>
-        </nav>
-    </div>
-</div>
-
-
-<!-- Cards for showing the products -->
-<div class="container max-width-adaptive-sm" style="display: flex;">
-    <div class="margin-bottom-sm">
-        <div class="grid gap-xxs">
-            <?php foreach ($data['pizzas'] as $pizza) : ?>
-                <div class="card col-6@sm" data-category="pizzas">
-                    <figure class="card__img-wrapper">
-                        <?php if ($pizza->imagePath) : ?>
-                            <img src="<?= $pizza->imagePath ?>" alt="<?= $pizza->productName ?> Image">
-                        <?php else : ?>
-                            <!-- Add a default image or placeholder if the imagePath is not available -->
-                            <img src="<?= URLROOT . '/path/to/default/image.jpg' ?>" alt="Default Image">
-                        <?php endif; ?>
-                    </figure>
-                    <div class="padding-xs">
-                        <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $pizza->productName ?></h3>
-                        <div class="margin-top-xs">
-                            <span class="prod-card__price">€<?= $pizza->productPrice ?></span>
+                                <button class="search-input__btn">
+                                    <svg class="icon" viewBox="0 0 20 20">
+                                        <title>Submit</title>
+                                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                            <circle cx="8" cy="8" r="6" />
+                                            <line x1="12.242" y1="12.242" x2="18" y2="18" />
+                                        </g>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                        <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
-                        <input type="hidden" class="productId" value="<?= $pizza->productId ?>">
-                        <input type="hidden" class="productName" value="<?= $pizza->productName ?>">
-                        <input type="hidden" class="productPrice" value="<?= $pizza->productPrice ?>">
-                        <input type="hidden" class="imagePath" value="<?= $pizza->imagePath ?>">
+
+                        <ul class="accordion js-accordion" data-animation="on" data-multi-items="on">
+                            <li class="accordion__item accordion__item--is-open js-accordion__item js-adv-filter__item" data-default-text="All" data-multi-select-text="{n} filters selected">
+                                <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
+                                    <div>
+                                        <div class="text-sm@md">Ingredients</div>
+                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">All</span></div>
+                                    </div>
+
+                                    <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
+                                        <g class="icon__group" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="3" y1="3" x2="17" y2="17" />
+                                            <line x1="17" y1="3" x2="3" y2="17" />
+                                        </g>
+                                    </svg>
+                                </button>
+
+
+                                <div class="accordion__panel js-accordion__panel">
+                                    <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md">
+                                        <!-- 👆 aria-controls -> filter plugin -->
+                                        <!-- 👆 data-btn-labels, data-ellipsis, data-btn-class -> read more component -->
+                                        <?php foreach ($data['ingredients'] as $ingredient) : ?>
+                                            <div>
+                                                <input class="checkbox" type="checkbox" id="checkbox-<?= $ingredient->ingredientId ?>" data-filter="<?= $ingredient->ingredientId ?>">
+                                                <label for="checkbox-<?= $ingredient->ingredientId ?>"><?= $ingredient->ingredientName ?></label>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="accordion__item js-accordion__item js-adv-filter__item" data-default-text="All">
+                                <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
+                                    <div>
+                                        <div class="text-sm@md">Products</div>
+                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">All</span></div>
+                                    </div>
+
+                                    <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
+                                        <g class="icon__group" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="3" y1="3" x2="17" y2="17" />
+                                            <line x1="17" y1="3" x2="3" y2="17" />
+                                        </g>
+                                    </svg>
+                                </button>
+
+                                <div class="accordion__panel js-accordion__panel">
+                                    <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md">
+                                        <ul class="adv-filter__radio-list flex flex-column gap-xxxs" aria-controls="adv-filter-gallery">
+                                            <li>
+                                                <input class="radio" type="radio" name="radio-filter" id="radio-all" data-filter="*" checked>
+                                                <label for="radio-all">All</label>
+                                            </li>
+                                            <?php foreach ($data['productType'] as $key => $value) : ?>
+                                                <li>
+                                                    <input class="radio" type="radio" name="radio-filter" id="radio-<?= $key ?>" data-filter="<?= $key ?>">
+                                                    <label for="radio-<?= $key ?>"><?= $value ?></label>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="accordion__item accordion__item--is-open js-accordion__item js-adv-filter__item" data-number-format="${n}">
+                                <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
+                                    <div>
+                                        <div class="text-sm@md">Price</div>
+                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">$0 - $100</span></div>
+                                    </div>
+
+                                    <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
+                                        <g class="icon__group" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="3" y1="3" x2="17" y2="17" />
+                                            <line x1="17" y1="3" x2="3" y2="17" />
+                                        </g>
+                                    </svg>
+                                </button>
+
+                                <div class="accordion__panel js-accordion__panel">
+                                    <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md flex justify-center">
+                                        <div class="slider slider--multi-value js-slider js-filter__custom-control" aria-controls="adv-filter-gallery" data-filter="priceRange">
+                                            <div class="slider__range">
+                                                <label class="sr-only" for="slider-min-value">Slider min value</label>
+                                                <input class="slider__input" type="range" id="slider-min-value" name="slider-min-value" min="0" max="100" step="1" value="0">
+                                            </div>
+
+                                            <div class="slider__range">
+                                                <label class="sr-only" for="slider-max-value">Slider max value</label>
+                                                <input class="slider__input" type="range" id="slider-max-value" name="slider-max-value" min="0" max="100" step="1" value="100">
+                                            </div>
+
+                                            <div class="margin-top-xs text-center text-sm" aria-hidden="true">
+                                                <span class="slider__value">$<span class="js-slider__value">0</span> - $<span class="js-slider__value">100</span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="accordion__item js-accordion__item js-adv-filter__item" data-default-text="All" data-multi-select-text="{n} filters selected" data-number-format="{n}">
+                                <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
+                                    <div>
+                                        <div class="text-sm@md">Rating</div>
+                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">all</span></div>
+                                    </div>
+
+                                    <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
+                                        <g class="icon__group" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="3" y1="3" x2="17" y2="17" />
+                                            <line x1="17" y1="3" x2="3" y2="17" />
+                                        </g>
+                                    </svg>
+                                </button>
+
+                                <div class="accordion__panel js-accordion__panel">
+                                    <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md">
+                                        <div class="flex justify-between items-center">
+                                            <label class="text-sm" for="index-value">Quantity</label>
+
+                                            <div class="number-input number-input--v2 js-number-input js-filter__custom-control" aria-controls="adv-filter-gallery" data-filter="indexValue">
+                                                <input class="form-control text-sm@md js-number-input__value" type="number" name="index-value" id="index-value" min="1" max="5" step="1" value="1">
+
+                                                <button class="reset number-input__btn number-input__btn--plus js-number-input__btn" aria-label="Increase Number">
+                                                    <svg class="icon" viewBox="0 0 12 12" aria-hidden="true">
+                                                        <path d="M11,5H7V1A1,1,0,0,0,5,1V5H1A1,1,0,0,0,1,7H5v4a1,1,0,0,0,2,0V7h4a1,1,0,0,0,0-2Z" />
+                                                    </svg>
+                                                </button>
+
+                                                <button class="reset number-input__btn number-input__btn--minus js-number-input__btn" aria-label="Decrease Number">
+                                                    <svg class="icon" viewBox="0 0 12 12" aria-hidden="true">
+                                                        <path d="M11,7H1A1,1,0,0,1,1,5H11a1,1,0,0,1,0,2Z" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="accordion__item accordion__item--is-open position-relative z-index-2 js-accordion__item js-adv-filter__item">
+                                <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
+                                    <div>
+                                        <div class="text-sm@md">Store</div>
+                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">All</span></div>
+                                    </div>
+
+                                    <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
+                                        <g class="icon__group" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="3" y1="3" x2="17" y2="17" />
+                                            <line x1="17" y1="3" x2="3" y2="17" />
+                                        </g>
+                                    </svg>
+                                </button>
+
+                                <div class="accordion__panel js-accordion__panel">
+                                    <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md flex">
+                                        <label class="sr-only" for="select-filter-option">Select Store:</label>
+
+                                        <div class="select width-100% js-select" data-trigger-class="btn btn--subtle flex-grow">
+                                            <!-- data-trigger-class -> custom select component 👆 -->
+                                            <select name="select-filter-option" id="select-filter-option" aria-controls="adv-filter-gallery" data-filter="true">
+                                                <option value="*" selected>All</option>
+                                                <?php foreach ($data['stores'] as $store) : ?>
+                                                    <option value="<?= $store->storeId ?>"><?= $store->storeName ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+
+                                            <svg class="icon icon--xxs margin-left-xxs" aria-hidden="true" viewBox="0 0 12 12">
+                                                <path d="M10.947,3.276A.5.5,0,0,0,10.5,3h-9a.5.5,0,0,0-.4.8l4.5,6a.5.5,0,0,0,.8,0l4.5-6A.5.5,0,0,0,10.947,3.276Z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+            </aside>
+
+            <main class="flex-grow padding-left-xl@md sidebar-loaded:show">
+                <div class="flex items-center justify-between margin-bottom-sm">
+                    <p class="text-sm"><span class="js-adv-filter__results-count">12</span> results</p>
+
+                    <div class="flex items-baseline">
+                        <label class="text-sm color-contrast-medium margin-right-xs" for="select-sorting">Sort:</label>
+
+                        <div class="select inline-block js-select" data-trigger-class="reset text-sm color-contrast-high text-underline inline-flex items-center cursor-pointer js-tab-focus">
+                            <!-- data-trigger-class -> custom select component 👆 -->
+                            <select name="select-sorting" id="select-sorting" aria-controls="adv-filter-gallery" data-sort="true">
+                                <option value="*" selected>No sorting</option>
+                                <option value="index" data-sort-number="true">Index</option>
+                                <option value="index" data-sort-order="desc" data-sort-number="true">Index Desc</option>
+                            </select>
+
+                            <svg class="icon icon--xxxs margin-left-xxs" viewBox="0 0 8 8">
+                                <path d="M7.934,1.251A.5.5,0,0,0,7.5,1H.5a.5.5,0,0,0-.432.752l3.5,6a.5.5,0,0,0,.864,0l3.5-6A.5.5,0,0,0,7.934,1.251Z" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            <?php endforeach; ?>
-            <?php foreach ($data['drinks'] as $drink) : ?>
-                <div class="card col-6@sm" data-category="drinks" style="display: none;">
-                    <figure class="card__img-wrapper">
-                        <?php if ($drink->imagePath) : ?>
-                            <img src="<?= $drink->imagePath ?>" alt="<?= $drink->productName ?> Image">
-                        <?php else : ?>
-                            <!-- Add a default image or placeholder if the imagePath is not available -->
-                            <img src="<?= URLROOT . '/path/to/default/image.jpg' ?>" alt="Default Image">
-                        <?php endif; ?>
-                    </figure>
-                    <div class="padding-xs">
-                        <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $drink->productName ?></h3>
 
-                        <div class="margin-top-xs">
-                            <span class="prod-card__price">€<?= $drink->productPrice ?></span>
-                        </div>
-                        <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
-                        <input type="hidden" class="productId" value="<?= $drink->productId ?>">
-                        <input type="hidden" class="productName" value="<?= $drink->productName ?>">
-                        <input type="hidden" class="productPrice" value="<?= $drink->productPrice ?>">
-                        <input type="hidden" class="productPath" value="<?= $drink->productPath ?>">
+                <div>
+                    <ul class="grid gap-sm js-adv-filter__gallery" id="adv-filter-gallery">
+                        <?php foreach ($data['pizzas'] as $pizza) : ?>
+                            <li class="col-4@xs flex flex-center padding-sm">
+                                <div class="card">
+                                    <figure class="card__img-wrapper">
+                                        <?php if ($pizza->imagePath) : ?>
+                                            <img src="<?= $pizza->imagePath ?>" alt="<?= $pizza->productName ?> Image">
+                                        <?php else : ?>
+                                            <!-- Add a default image or placeholder if the imagePath is not available -->
+                                            <img src="<?= URLROOT . '/path/to/default/image.jpg' ?>" alt="Default Image">
+                                        <?php endif; ?>
+                                    </figure>
+                                    <div class="padding-xs">
+                                        <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $pizza->productName ?></h3>
+                                        <div class="margin-top-xs">
+                                            <span class="prod-card__price">€<?= $pizza->productPrice ?></span>
+                                        </div>
+                                        <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
+                                        <input type="hidden" class="productId" value="<?= $pizza->productId ?>">
+                                        <input type="hidden" class="productName" value="<?= $pizza->productName ?>">
+                                        <input type="hidden" class="productPrice" value="<?= $pizza->productPrice ?>">
+                                        <input type="hidden" class="imagePath" value="<?= $pizza->imagePath ?>">
+                                    </div>
+                                </div>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+
+                    <div class="margin-top-md" data-fallback-gallery-id="adv-filter-gallery">
+                        <p class="color-contrast-medium text-center">No results</p>
                     </div>
                 </div>
-            <?php endforeach; ?>
-            <?php foreach ($data['snacks'] as $snack) : ?>
-                <div class="card col-6@sm" data-category="snacks" style="display: none;">
-                    <figure class="card__img-wrapper">
-                        <?php if ($snack->imagePath) : ?>
-                            <img src="<?= $snack->imagePath ?>" alt="<?= $snack->productName ?> Image">
-                        <?php else : ?>
-                            <!-- Add a default image or placeholder if the imagePath is not available -->
-                            <img src="<?= URLROOT . '/path/to/default/image.jpg' ?>" alt="Default Image">
-                        <?php endif; ?>
-                    </figure>
-                    <div class="padding-xs">
-                        <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $snack->productName ?></h3>
-
-                        <div class="margin-top-xs">
-                            <span class="prod-card__price">€<?= $snack->productPrice ?></span>
-                        </div>
-                        <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
-                        <input type="hidden" class="productId" value="<?= $snack->productId ?>">
-                        <input type="hidden" class="productName" value="<?= $snack->productName ?>">
-                        <input type="hidden" class="productPrice" value="<?= $snack->productPrice ?>">
-                        <input type="hidden" class="productPath" value="<?= $snack->productPath ?>">
-                    </div>
-                </div>
-            <?php endforeach; ?>
+            </main>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Basket -->
 <div class="drawer dr-cart js-drawer" id="drawer-cart-id">
@@ -321,37 +441,6 @@
         </li>
     </ol>
 </nav>
-
-<section>
-    <div class="container max-width-adaptive-lg">
-        <div class="margin-bottom-lg">
-            <h1 class="text-center">Hear it from our customers.</h1>
-        </div>
-        <div class="grid gap-sm">
-            <?php foreach ($data['reviews'] as $review) : ?>
-                <div class="bg-contrast-lower bg-opacity-50% radius-md padding-md text-center flex@md flex-column@md col-4@md">
-                    <div class="rating rating--read-only js-rating js-rating--read-only margin-bottom-sm">
-                        <p class="sr-only">The rating of this product is <span class="rating__value js-rating__value"><?= $review->reviewRating ?></span> out of 5</p>
-
-                        <div class="rating__control rating__control--is-hidden js-rating__control">
-                            <svg width="24" height="24" viewBox="0 0 24 24">
-                                <polygon points="12 1.489 15.09 7.751 22 8.755 17 13.629 18.18 20.511 12 17.261 5.82 20.511 7 13.629 2 8.755 8.91 7.751 12 1.489" fill="currentColor" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    <blockquote class="line-height-md margin-bottom-md"><?= $review->reviewText ?></blockquote>
-
-                    <footer class="flex flex-column items-center margin-top-auto@md">
-                        <cite class="text-sm">
-                            <strong><?= $review->customerFirstName . " " . $review->customerLastName ?></strong>
-                        </cite>
-                    </footer>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</section>
 <br>
 <!-- Footer -->
 <footer class="main-footer position-relative z-index-1 padding-top-xl footer">

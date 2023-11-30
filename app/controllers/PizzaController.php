@@ -6,11 +6,15 @@ class PizzaController extends Controller
 {
     private $productModel;
     private $screenModel;
+    private $ingredientModel;
+    private $storeModel;
 
     public function __construct()
     {
         $this->productModel = $this->model('ProductModel');
         $this->screenModel = $this->model('ScreenModel');
+        $this->ingredientModel = $this->model('IngredientModel');
+        $this->storeModel = $this->model('StoreModel');
     }
 
     public function index()
@@ -23,9 +27,12 @@ class PizzaController extends Controller
 
     public function productOverview()
     {
+        global $productType;
         $pizzas = $this->productModel->getPizzas();
         $drinks = $this->productModel->getDrinks();
         $snacks = $this->productModel->getSnacks();
+        $ingredients = $this->ingredientModel->getIngredients();
+        $stores = $this->storeModel->getStores();
 
         // Fetch image paths for pizzas
         foreach ($pizzas as $pizza) {
@@ -48,6 +55,9 @@ class PizzaController extends Controller
             'pizzas' => $pizzas,
             'drinks' => $drinks,
             'snacks' => $snacks,
+            'ingredients' => $ingredients,
+            'productType' => $productType,
+            'stores' => $stores
         ];
 
         $this->view('pizza/index', $data);

@@ -18,3 +18,9 @@ $var['pool'] = array('_', '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
 $var['rand'] = $var['pool'][rand(2, 63)] . $var['pool'][rand(2, 63)] . $var['pool'][rand(2, 63)] . $var['pool'][rand(2, 63)];
 
 $var['timestamp'] = time();
+
+$productType = [
+    'pizza' => 'Pizzas',
+    'drink' => 'Drinks',
+    'snack' => 'Snacks'
+];

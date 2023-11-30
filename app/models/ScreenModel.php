@@ -32,19 +32,10 @@ class ScreenModel
             $screenId = $screenData->screenId;
             $screenCreateDate = date('Ymd', $screenData->screenCreateDate);
 
-            $imagePath = IMAGEROOT . $screenCreateDate . '/' . $screenId .'.jpg'; // Adjust the file extension as needed
+            $imagePath = IMAGEROOT . $screenCreateDate . '/' . $screenId . '.jpg'; // Adjust the file extension as needed
 
-
-            // if (file_exists($imagePath)) {
-            //     echo 'Hoi';exit;
-                return $imagePath;
-            // } else {
-            //     // Handle the case when the image file doesn't exist
-            //     echo 'doei';exit;
-            //     return null;
-            // }
+            return $imagePath;
         } else {
-            // Handle the case when the screen data is not found
             return null;
         }
     }
