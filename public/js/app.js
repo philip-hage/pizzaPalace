@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", function () {
   addToCartButtons.forEach(function (button) {
     button.addEventListener("click", function () {
       const card = button.parentElement;
-      console.log(card);
       const productId = card.querySelector(".productId").value;
       const productName = card.querySelector(".productName").value;
       const productPrice = card.querySelector(".productPrice").value;
@@ -103,8 +102,6 @@ document.addEventListener("DOMContentLoaded", function () {
         // Create a new list item for each pizza
         const listItem = document.createElement("li");
         listItem.classList.add("dr-cart__product");
-
-        console.log(product.path);
 
         // Create an <img> element for pizza image
         const imageUrl = product.path;
@@ -194,4 +191,3 @@ document.addEventListener("DOMContentLoaded", function () {
 
   updateCartCount();
 });
-

@@ -83,6 +83,8 @@
     </div>
 </div>
 
+
+<!-- filter on the left side -->
 <section class="adv-filter padding-y-lg js-adv-filter">
     <div class="container max-width-adaptive-lg">
         <div class="margin-bottom-md hide@md no-js:is-hidden">
@@ -106,9 +108,10 @@
                         </button>
                     </header>
 
-                    <form class="position-relative z-index-1 js-adv-filter__form">
+                    <!-- <form id="filter-form" class="position-relative z-index-1 js-adv-filter__form" action="" method="get"> -->
+                    <form>
                         <div class="padding-md padding-0@md margin-bottom-sm@md">
-                            <button class="reset text-sm color-contrast-high text-underline cursor-pointer margin-bottom-sm text-xs@md js-adv-filter__reset js-tab-focus" type="reset">Reset all filters</button>
+                            <a href="<?= URLROOT ?>pizzacontroller/productoverview/" class="reset text-sm color-contrast-high text-underline cursor-pointer margin-bottom-sm text-xs@md js-adv-filter__reset js-tab-focus" type="reset">Reset all filters</a>
 
                             <div class="search-input search-input--icon-left text-sm@md">
                                 <input class="search-input__input form-control" type="search" name="search-products" id="search-products" placeholder="Try category 1..." aria-label="Search" data-filter="searchInput" aria-controls="adv-filter-gallery">
@@ -148,7 +151,7 @@
                                         <!-- 👆 data-btn-labels, data-ellipsis, data-btn-class -> read more component -->
                                         <?php foreach ($data['ingredients'] as $ingredient) : ?>
                                             <div>
-                                                <input class="checkbox" type="checkbox" id="checkbox-<?= $ingredient->ingredientId ?>" data-filter="<?= $ingredient->ingredientId ?>">
+                                                <input class="checkbox" name="ingredients" type="checkbox" id="checkbox-<?= $ingredient->ingredientId ?>" value="<?= $ingredient->ingredientId?>" data-filter="<?= $ingredient->ingredientId ?>">
                                                 <label for="checkbox-<?= $ingredient->ingredientId ?>"><?= $ingredient->ingredientName ?></label>
                                             </div>
                                         <?php endforeach; ?>
@@ -175,12 +178,12 @@
                                     <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md">
                                         <ul class="adv-filter__radio-list flex flex-column gap-xxxs" aria-controls="adv-filter-gallery">
                                             <li>
-                                                <input class="radio" type="radio" name="radio-filter" id="radio-all" data-filter="*" checked>
+                                                <input class="radio" type="radio" name="type" id="radio-all" data-filter="*" checked>
                                                 <label for="radio-all">All</label>
                                             </li>
                                             <?php foreach ($data['productType'] as $key => $value) : ?>
                                                 <li>
-                                                    <input class="radio" type="radio" name="radio-filter" id="radio-<?= $key ?>" data-filter="<?= $key ?>">
+                                                    <input class="radio" type="radio" name="type" id="radio-<?= $key ?>" data-filter="<?= $key ?>" value="<?= $key ?>">
                                                     <label for="radio-<?= $key ?>"><?= $value ?></label>
                                                 </li>
                                             <?php endforeach; ?>
@@ -301,55 +304,39 @@
                                 </div>
                             </li>
                         </ul>
+                        <button type="submit" class="btn btn--primary text-sm width-100%">Apply Filters</button>
                     </form>
                 </div>
             </aside>
 
             <main class="flex-grow padding-left-xl@md sidebar-loaded:show">
                 <div class="flex items-center justify-between margin-bottom-sm">
-                    <p class="text-sm"><span class="js-adv-filter__results-count">12</span> results</p>
-
-                    <div class="flex items-baseline">
-                        <label class="text-sm color-contrast-medium margin-right-xs" for="select-sorting">Sort:</label>
-
-                        <div class="select inline-block js-select" data-trigger-class="reset text-sm color-contrast-high text-underline inline-flex items-center cursor-pointer js-tab-focus">
-                            <!-- data-trigger-class -> custom select component 👆 -->
-                            <select name="select-sorting" id="select-sorting" aria-controls="adv-filter-gallery" data-sort="true">
-                                <option value="*" selected>No sorting</option>
-                                <option value="index" data-sort-number="true">Index</option>
-                                <option value="index" data-sort-order="desc" data-sort-number="true">Index Desc</option>
-                            </select>
-
-                            <svg class="icon icon--xxxs margin-left-xxs" viewBox="0 0 8 8">
-                                <path d="M7.934,1.251A.5.5,0,0,0,7.5,1H.5a.5.5,0,0,0-.432.752l3.5,6a.5.5,0,0,0,.864,0l3.5-6A.5.5,0,0,0,7.934,1.251Z" />
-                            </svg>
-                        </div>
-                    </div>
+                    <p class="text-sm"><span class="js-adv-filter__results-count"></span> results</p>
                 </div>
 
                 <div>
                     <ul class="grid gap-sm js-adv-filter__gallery" id="adv-filter-gallery">
-                        <?php foreach ($data['pizzas'] as $pizza) : ?>
+                        <?php foreach ($data['products'] as $product) : ?>
                             <li class="col-4@xs flex flex-center padding-sm">
                                 <div class="card">
                                     <figure class="card__img-wrapper">
-                                        <?php if ($pizza->imagePath) : ?>
-                                            <img src="<?= $pizza->imagePath ?>" alt="<?= $pizza->productName ?> Image">
+                                        <?php if ($product->imagePath) : ?>
+                                            <img src="<?= $product->imagePath ?>" alt="<?= $product->productName ?> Image">
                                         <?php else : ?>
                                             <!-- Add a default image or placeholder if the imagePath is not available -->
                                             <img src="<?= URLROOT . '/path/to/default/image.jpg' ?>" alt="Default Image">
                                         <?php endif; ?>
                                     </figure>
                                     <div class="padding-xs">
-                                        <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $pizza->productName ?></h3>
+                                        <h3 class="margin-top-xs margin-bottom-sm text-sm color-contrast-medium line-height-md"><?= $product->productName ?></h3>
                                         <div class="margin-top-xs">
-                                            <span class="prod-card__price">€<?= $pizza->productPrice ?></span>
+                                            <span class="prod-card__price">€<?= $product->productPrice ?></span>
                                         </div>
                                         <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
-                                        <input type="hidden" class="productId" value="<?= $pizza->productId ?>">
-                                        <input type="hidden" class="productName" value="<?= $pizza->productName ?>">
-                                        <input type="hidden" class="productPrice" value="<?= $pizza->productPrice ?>">
-                                        <input type="hidden" class="imagePath" value="<?= $pizza->imagePath ?>">
+                                        <input type="hidden" class="productId" value="<?= $product->productId ?>">
+                                        <input type="hidden" class="productName" value="<?= $product->productName ?>">
+                                        <input type="hidden" class="productPrice" value="<?= $product->productPrice ?>">
+                                        <input type="hidden" class="imagePath" value="<?= $product->imagePath ?>">
                                     </div>
                                 </div>
                             </li>

@@ -25,39 +25,29 @@ class PizzaController extends Controller
         $this->view('pizza/index', $data);
     }
 
-    public function productOverview()
+    public function productOverview($params = NULL)
     {
+        // Helper::dump($params);exit;
         global $productType;
-        $pizzas = $this->productModel->getPizzas();
-        $drinks = $this->productModel->getDrinks();
-        $snacks = $this->productModel->getSnacks();
-        $ingredients = $this->ingredientModel->getIngredients();
+
+        $ingredients = $this->productModel->getProductByIngredient();
         $stores = $this->storeModel->getStores();
 
-        // Fetch image paths for pizzas
-        foreach ($pizzas as $pizza) {
-            // Access properties using -> instead of []
-            $pizza->imagePath = $this->screenModel->getScreenImage($pizza->productId);
-        }
+        $typeFilter = isset($params['type']) ? $params['type'] : null;
 
-        // Fetch image paths for drinks
-        foreach ($drinks as $drink) {
-            $drink->imagePath = $this->screenModel->getScreenImage($drink->productId);
-        }
- 
-        // Fetch image paths for snacks
-        foreach ($snacks as $snack) {
-            $snack->imagePath = $this->screenModel->getScreenImage($snack->productId);
+        $products = $this->productModel->getProductByType(['type' => $typeFilter]);
+
+        foreach ($products as $product)
+        {
+            $product->imagePath = $this->screenModel->getScreenImage($product->productId);
         }
 
         $data = [
             'title' => 'Pizza Overview',
-            'pizzas' => $pizzas,
-            'drinks' => $drinks,
-            'snacks' => $snacks,
             'ingredients' => $ingredients,
             'productType' => $productType,
-            'stores' => $stores
+            'stores' => $stores,
+            'products' => $products
         ];
 
         $this->view('pizza/index', $data);

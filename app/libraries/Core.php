@@ -1,8 +1,8 @@
 <?php
 class Core
 {
-    protected $currentController = 'PizzaController';
-    protected $currentMethod = 'productOverview';
+    protected $currentController = 'pizzacontroller';
+    protected $currentMethod = 'productoverview';
     protected $params = '';
 
 
@@ -58,11 +58,29 @@ class Core
 
         // Iterate through each pair and explode using ':' as the delimiter
         foreach ($pairs as $pair) {
-            $parts = explode(':', $pair, 2); // Limit to 2 parts to handle values with colons
-            if (count($parts) == 2) {
-                $array[trim($parts[0], '{}')] = $parts[1];
+            if (is_string($pair) && strpos($pair, '[') !== false && strpos($pair, ']') !== false) {
+                // Extract content between square brackets
+                preg_match('/\[(.*?)\]/', $pair, $matches);
+
+                // Check if there are matches
+                if (isset($matches[1])) {
+                    // Extracted content between square brackets
+                    $contentBetweenBrackets = $matches[1];
+
+                    // Split the content into an array using ","
+                    $valuesArray = explode(',', $contentBetweenBrackets);
+
+                    $array['ingredients'] = $valuesArray; 
+                }
+            } else {
+                $parts = explode(':', $pair, 2); // Limit to 2 parts to handle values with colons
+                if (count($parts) == 2) {
+                    $array[trim($parts[0], '{}')] = $parts[1];
+                }
             }
         }
+
+        // Helper::dump($array); exit;
 
         call_user_func_array([$this->currentController, $this->currentMethod], [$array]);
     }
@@ -80,12 +98,30 @@ class Core
             //remove the backslash from the front of the url
             $incoming = trim($incoming, "/");
             $url = filter_var($incoming, FILTER_SANITIZE_URL);
+
+            // Check if the string contains %7B
+            if (strpos($url, '%7B') !== false && strpos($url, '%7D') !== false) {
+                // Parse the URL
+                $urlParts = parse_url($url);
+
+                // Split the string by slashes
+                $parts = explode('/', $urlParts['path']);
+
+                // Keep the first two parts, discard the rest
+                $changedUrl = implode('/', array_slice($parts, 0, 2));
+            }
+
             if (strpos($incoming, '?') !== false) {
                 // Get everything behind the "?" character
                 $queryString = substr($incoming, strpos($incoming, '?') + 1);
 
+                // Helper::dump($queryString);
+
                 // Explode the query string into an array
                 $queryParamsArray = explode('&', $queryString);
+
+                // Helper::dump($queryParamsArray);
+                // exit;
 
                 // Initialize an associative array to store key-value pairs
                 $params = array();
@@ -95,9 +131,21 @@ class Core
                     // Split the pair into key and value
                     list($key, $value) = explode('=', $pair);
 
-                    // Add to the associative array
-                    $params[$key] = $value;
+                    // Check if the key is "ingredients"
+                    if ($key === 'ingredients') {
+                        // If the key is "ingredients", add the value to an array
+                        $params[$key][] = $value;
+                    } else {
+                        // If the key is not "ingredients", add it as is
+                        $params[$key] = $value;
+                    }
                 }
+
+
+                $filteredParams = array_filter($params, function ($value) {
+                    return !empty($value) && $value !== 'NULL';
+                });
+
 
                 // Parse the URL
                 $urlParts = parse_url($url);
@@ -106,33 +154,35 @@ class Core
                 parse_str($urlParts['query'], $queryParams);
 
                 // Create the new URL format
-                $newUrl = $urlParts['path'] . "{";
-                    
+                $newUrl = (isset($changedUrl)) ? $changedUrl . "/{" : $urlParts['path'] . "/{";
+
                 // Iterate through each key-value pair
-                foreach ($params as $key => $value) {
-                    // Append key and value to the URL format
-                    $newUrl .= $key . ':' . $value . ';';
+                foreach ($filteredParams as $key => $value) {
+                    // Check if the key is "ingredients"
+                    if ($key === 'ingredients' && is_array($value)) {
+                        // If the key is "ingredients" and the value is an array, format it as "key[value1,value2];"
+                        $newUrl .= $key . '[' . implode(',', $value) . '];';
+                    } else {
+                        // If the key is not "ingredients" or the value is not an array, append key and value to the URL format
+                        $newUrl .= $key . ':' . $value . ';';
+                    }
                 }
 
-                $newUrl .= "}/";
+                $newUrl .= "}";
 
                 $transformedParams = [];
                 foreach ($params as $key => $value) {
-                    $transformedParams[urldecode($key)] = urldecode($value);
+                    if (is_array($value)) {
+                        // If the value is an array, urldecode each element
+                        $decodedValues = array_map('urldecode', $value);
+                        $transformedParams[urldecode($key)] = $decodedValues;
+                    } else {
+                        // If the value is not an array, urldecode it
+                        $transformedParams[urldecode($key)] = urldecode($value);
+                    }
                 }
 
-                // Output or use the associative array as needed
-                Helper::dump($transformedParams);
-
-                // Example: Extract 'page' parameter
-                $pageNumber = isset($transformedParams['page']) ? (int)$transformedParams['page'] : 1;
-                Helper::dump($pageNumber);
-
-                // Output or use the associative array as needed
-                Helper::dump($this->params);
-
                 header("Location:" . URLROOT . $newUrl);
-                exit();
             }
 
             // Trim leading and trailing slashes
@@ -157,7 +207,7 @@ class Core
 
             return $output;
         } else {
-            return array('Pizza', 'overview');
+            return array('pizzacontroller', 'productoverview');
         }
     }
 }
