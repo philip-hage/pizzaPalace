@@ -25,21 +25,43 @@ class PizzaController extends Controller
         $this->view('pizza/index', $data);
     }
 
-    public function productOverview($params = NULL)
+    public function overview($params = NULL)
     {
-        // Helper::dump($params);exit;
         global $productType;
 
-        $ingredients = $this->productModel->getProductByIngredient();
+        $ingredients = $this->ingredientModel->getIngredients();
         $stores = $this->storeModel->getStores();
 
         $typeFilter = isset($params['type']) ? $params['type'] : null;
+        $selectedIngredients = isset($params['ingredients']) ? $params['ingredients'] : [];
 
-        $products = $this->productModel->getProductByType(['type' => $typeFilter]);
+        if ($typeFilter || $selectedIngredients) {
 
-        foreach ($products as $product)
-        {
-            $product->imagePath = $this->screenModel->getScreenImage($product->productId);
+            if($selectedIngredients){
+                $productsResult = $this->productModel->getProductByIngredient(['type' => $typeFilter, 'ingredients' => $selectedIngredients]);
+            } elseif ($typeFilter) {
+                $productsResult = $this->productModel->getProductByType(['type' => $typeFilter]);
+            }
+
+            // Group products by productId to eliminate duplicates
+            $products = [];
+            foreach ($productsResult as $product) {
+                $productId = $product->productId;
+                if (!isset($products[$productId])) {
+                    $products[$productId] = $product;
+                }
+            }
+
+            foreach ($products as $product) {
+                $product->imagePath = $this->screenModel->getScreenImage($product->productId);
+            }
+        } else {
+            $products = $this->productModel->getProducts();
+
+
+            foreach ($products as $product) {
+                $product->imagePath = $this->screenModel->getScreenImage($product->productId);
+            }
         }
 
         $data = [

@@ -111,7 +111,7 @@
                     <!-- <form id="filter-form" class="position-relative z-index-1 js-adv-filter__form" action="" method="get"> -->
                     <form>
                         <div class="padding-md padding-0@md margin-bottom-sm@md">
-                            <a href="<?= URLROOT ?>pizzacontroller/productoverview/" class="reset text-sm color-contrast-high text-underline cursor-pointer margin-bottom-sm text-xs@md js-adv-filter__reset js-tab-focus" type="reset">Reset all filters</a>
+                            <a href="<?= URLROOT ?>pizzacontroller/overview/" class="reset text-sm color-contrast-high text-underline cursor-pointer margin-bottom-sm text-xs@md js-adv-filter__reset js-tab-focus" type="reset">Reset all filters</a>
 
                             <div class="search-input search-input--icon-left text-sm@md">
                                 <input class="search-input__input form-control" type="search" name="search-products" id="search-products" placeholder="Try category 1..." aria-label="Search" data-filter="searchInput" aria-controls="adv-filter-gallery">
@@ -151,7 +151,7 @@
                                         <!-- 👆 data-btn-labels, data-ellipsis, data-btn-class -> read more component -->
                                         <?php foreach ($data['ingredients'] as $ingredient) : ?>
                                             <div>
-                                                <input class="checkbox" name="ingredients" type="checkbox" id="checkbox-<?= $ingredient->ingredientId ?>" value="<?= $ingredient->ingredientId?>" data-filter="<?= $ingredient->ingredientId ?>">
+                                                <input class="checkbox" name="ingredients" type="checkbox" id="checkbox-<?= $ingredient->ingredientId ?>" value="<?= $ingredient->ingredientId ?>" data-filter="<?= $ingredient->ingredientId ?>">
                                                 <label for="checkbox-<?= $ingredient->ingredientId ?>"><?= $ingredient->ingredientName ?></label>
                                             </div>
                                         <?php endforeach; ?>
@@ -178,7 +178,7 @@
                                     <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md">
                                         <ul class="adv-filter__radio-list flex flex-column gap-xxxs" aria-controls="adv-filter-gallery">
                                             <li>
-                                                <input class="radio" type="radio" name="type" id="radio-all" data-filter="*" checked>
+                                                <input class="radio" type="radio" name="type" id="radio-all" value="" data-filter="*" checked>
                                                 <label for="radio-all">All</label>
                                             </li>
                                             <?php foreach ($data['productType'] as $key => $value) : ?>
@@ -313,7 +313,18 @@
                 <div class="flex items-center justify-between margin-bottom-sm">
                     <p class="text-sm"><span class="js-adv-filter__results-count"></span> results</p>
                 </div>
-
+                <div class="flex items-center justify-between margin-bottom-sm">
+                    <p class="text-sm"><span class="js-adv-filter__results-count">12</span> results</p>
+                    <div class="flex items-baseline">
+                        <label class="text-sm color-contrast-medium margin-right-xs" for="select-sorting">Sort:</label>
+                        <?php
+                        // Generate links for each sorting option within the same container
+                        $currentUrl = strtok($_SERVER["REQUEST_URI"], '?');
+                        ?>
+                        <a href="<?php echo $currentUrl; ?>?sort=price-asc" class="text-sm color-contrast-medium margin-right-xs">Price Ascending</a>
+                        <a href="<?php echo $currentUrl; ?>?sort=price-desc" class="text-sm color-contrast-medium margin-right-xs">Price Descending</a>
+                    </div>
+                </div>
                 <div>
                     <ul class="grid gap-sm js-adv-filter__gallery" id="adv-filter-gallery">
                         <?php foreach ($data['products'] as $product) : ?>
@@ -342,10 +353,11 @@
                             </li>
                         <?php endforeach; ?>
                     </ul>
-
-                    <div class="margin-top-md" data-fallback-gallery-id="adv-filter-gallery">
-                        <p class="color-contrast-medium text-center">No results</p>
-                    </div>
+                    <?php if (empty($data['products'])) : ?>
+                        <div class="margin-top-md" data-fallback-gallery-id="adv-filter-gallery">
+                            <p class="color-contrast-medium text-center">No results</p>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </main>
         </div>

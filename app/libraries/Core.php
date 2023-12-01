@@ -1,8 +1,8 @@
 <?php
 class Core
 {
-    protected $currentController = 'pizzacontroller';
-    protected $currentMethod = 'productoverview';
+    protected $currentController = 'landingpagecontroller';
+    protected $currentMethod = 'index';
     protected $params = '';
 
 
@@ -70,13 +70,25 @@ class Core
                     // Split the content into an array using ","
                     $valuesArray = explode(',', $contentBetweenBrackets);
 
-                    $array['ingredients'] = $valuesArray; 
+                    $array['ingredients'] = $valuesArray;
                 }
             } else {
                 $parts = explode(':', $pair, 2); // Limit to 2 parts to handle values with colons
                 if (count($parts) == 2) {
                     $array[trim($parts[0], '{}')] = $parts[1];
                 }
+            }
+        }
+
+        // Check if the URL contains a "sort" parameter
+        if (strpos($_SERVER['REQUEST_URI'], 'sort=') !== false) {
+            // Extract the "sort" parameter from the URL
+            $sortParam = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], 'sort=') + 5);
+
+            // Check if the "sort" parameter is valid (ASC or DESC)
+            if (in_array($sortParam, ['ASC', 'DESC'])) {
+                // Set the sort option in the associative array
+                $array['sort'] = $sortParam;
             }
         }
 
@@ -107,7 +119,7 @@ class Core
                 // Split the string by slashes
                 $parts = explode('/', $urlParts['path']);
 
-                // Keep the first two parts, discard the rest
+                // Keep the first two parts and include the slash if it exists
                 $changedUrl = implode('/', array_slice($parts, 0, 2));
             }
 
@@ -154,7 +166,7 @@ class Core
                 parse_str($urlParts['query'], $queryParams);
 
                 // Create the new URL format
-                $newUrl = (isset($changedUrl)) ? $changedUrl . "/{" : $urlParts['path'] . "/{";
+                $newUrl = (isset($changedUrl)) ? $changedUrl . "/{" : $urlParts['path'] . "{";
 
                 // Iterate through each key-value pair
                 foreach ($filteredParams as $key => $value) {
@@ -168,7 +180,20 @@ class Core
                     }
                 }
 
-                $newUrl .= "}";
+                $newUrl .= "}/";
+
+
+                // Check if the URL contains a "sort" parameter
+                if (strpos($incoming, 'sort=') !== false) {
+                    // Extract the "sort" parameter from the URL
+                    $sortParam = substr($incoming, strpos($incoming, 'sort=') + 5);
+
+                    // Check if the "sort" parameter is valid (ASC or DESC)
+                    if (in_array($sortParam, ['ASC', 'DESC'])) {
+                        // Append the "sort" parameter to the URL format
+                        $newUrl .= 'sort=' . $sortParam . '/';
+                    }
+                }
 
                 $transformedParams = [];
                 foreach ($params as $key => $value) {
@@ -207,7 +232,7 @@ class Core
 
             return $output;
         } else {
-            return array('pizzacontroller', 'productoverview');
+            return array('pizzacontroller', 'overview');
         }
     }
 }

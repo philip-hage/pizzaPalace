@@ -65,18 +65,65 @@ class ProductModel
         return $this->db->resultSet();
     }
 
-    public function getProductByIngredient()
+    public function getProducts()
     {
-        $this->db->query("SELECT p.productName,
-                                 p.productPrice,
-                                 p.productType,
-                                 i.ingredientName,
-                                 i.ingredientPrice,
-                                 phi.productId,
-                                 phi.ingredientId
-                                 FROM producthasingredients as phi 
-                                 INNER JOIN products as p ON phi.productId = p.productId
-                                 INNER JOIN ingredients as i ON phi.ingredientId = i.ingredientId");
+        $this->db->query("SELECT productId,
+                                 productName,
+                                 productPrice,
+                                 productType  
+                                 FROM products 
+                                 WHERE productIsActive = 1");
+
+        return $this->db->resultSet();
+    }
+
+    public function getProductByIngredient($params = NULL)
+    {
+        $typeFilter = isset($params['type']) ? $params['type'] : null;
+        $ingredientFilter = isset($params['ingredients']) ? $params['ingredients'] : null;
+
+        $query = "SELECT p.productName,
+                         p.productPrice,
+                         p.productType,
+                         i.ingredientName,
+                         i.ingredientPrice,
+                         phi.productId,
+                         phi.ingredientId
+                         FROM producthasingredients as phi 
+                         INNER JOIN products as p ON phi.productId = p.productId
+                         INNER JOIN ingredients as i ON phi.ingredientId = i.ingredientId
+                         WHERE 1"; // Start the WHERE clause
+
+        if ($typeFilter) {
+            $query .= " AND p.productType = :type";
+        }
+
+        if ($ingredientFilter) {
+            // Generate named placeholders for each ingredient in the IN clause
+            $ingredientPlaceholders = implode(',', array_map(function ($index) {
+                return ":ingredient{$index}";
+            }, array_keys($ingredientFilter)));
+
+            $query .= " AND i.ingredientId IN (SELECT DISTINCT i.ingredientId FROM producthasingredients WHERE i.ingredientId IN ({$ingredientPlaceholders}))";
+        }
+
+        // Add DISTINCT keyword to select only distinct rows
+        $query .= " AND p.productId IN (SELECT DISTINCT p.productId FROM producthasingredients)";
+
+        $this->db->query($query);
+
+        // Bind parameters if needed
+        if ($typeFilter) {
+            $this->db->bind(':type', $typeFilter);
+        }
+
+        // Bind ingredient parameters if needed
+        if ($ingredientFilter) {
+            foreach ($ingredientFilter as $index => $ingredientId) {
+                $this->db->bind(":ingredient{$index}", $ingredientId);
+            }
+        }
+
         return $this->db->resultSet();
     }
 }
