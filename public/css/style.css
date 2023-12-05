@@ -9,7 +9,7 @@
 }
 
 #navbar {
-  padding: 3.2rem;
+  /* padding: 3.2rem; */
   background-color: #1F9334;
 }
 
@@ -27,4 +27,23 @@
 
 .card {
   width: 100%;
+}
+
+.slideshow-pm__content {
+  margin: 0 auto; /* This centers the content horizontally */
+  text-align: center; /* This centers the inline-block elements inside */
+}
+
+.small-slider {
+  max-width: 1200px; /* Adjust the maximum width as per your requirements */
+  margin: 0 auto; /* This centers the slider horizontally */
+}
+
+.small-slider .slideshow-pm__item {
+  max-width: 100%; /* Ensure each slide takes the full width of the container */
+}
+
+.small-slider-image {
+  max-width: 100%; /* Make sure images fit within the slide */
+  height: auto; /* Maintain the aspect ratio */
 }

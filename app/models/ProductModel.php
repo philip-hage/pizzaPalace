@@ -77,6 +77,54 @@ class ProductModel
         return $this->db->resultSet();
     }
 
+    public function getProductBySearch($params = NULL)
+    {
+        $searchProduct = isset($params['search']) ? $params['search'] : null;
+
+        $this->db->query("SELECT productId,
+                                 productName,
+                                 productPrice,
+                                 productType 
+                                 FROM products
+                                 WHERE productIsActive = 1 AND productName LIKE :search");
+        $this->db->bind(':search', '%' . $searchProduct . '%');
+        return $this->db->resultSet();
+    }
+
+    public function getProductByPrice($params = NULL)
+    {
+        $priceMin = isset($params['pricemin']) ? $params['pricemin'] : null;
+        $priceMax = isset($params['pricemax']) ? $params['pricemax'] : null;
+
+        $query = "SELECT productId,
+                       productName,
+                       productPrice,
+                       productType 
+                FROM products
+                WHERE productIsActive = 1";
+
+        if ($priceMin !== null && $priceMax !== null) {
+            $query .= " AND productPrice BETWEEN :priceMin AND :priceMax";
+        } elseif ($priceMin !== null) {
+            $query .= " AND productPrice >= :priceMin";
+        } elseif ($priceMax !== null) {
+            $query .= " AND productPrice <= :priceMax";
+        }
+
+        $this->db->query($query);
+
+        if ($priceMin !== null && $priceMax !== null) {
+            $this->db->bind(':priceMin', $priceMin);
+            $this->db->bind(':priceMax', $priceMax);
+        } elseif ($priceMin !== null) {
+            $this->db->bind(':priceMin', $priceMin);
+        } elseif ($priceMax !== null) {
+            $this->db->bind(':priceMax', $priceMax);
+        }
+
+        return $this->db->resultSet();
+    }
+
     public function getProductByIngredient($params = NULL)
     {
         $typeFilter = isset($params['type']) ? $params['type'] : null;
@@ -124,6 +172,16 @@ class ProductModel
             }
         }
 
+        return $this->db->resultSet();
+    }
+
+    public function getReviewByProduct($productId)
+    {
+
+        $this->db->query('SELECT reviewRating
+                                 FROM reviews
+                                 WHERE reviewEntityId = :productId');
+        $this->db->bind(':productId', $productId);
         return $this->db->resultSet();
     }
 }

@@ -1,4 +1,5 @@
 @use '../base' as *;
+
 /* -------------------------------- 
 
 File#: _1_choice-tags
@@ -10,29 +11,32 @@ Usage: codyhouse.co/license
 
 :root {
   --choice-tag-icon-size: 16px;
-  --choice-tag-icon-stroke-width: 2px;
 }
 
 .choice-tag {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-xs) var(--space-sm);
   border-radius: 50em;
-  border: 1px solid var(--color-contrast-lower);
+  box-shadow: 0 0 0 1px var(--color-contrast-lower);
   cursor: pointer;
   user-select: none;
   transition: .2s;
 
   &:hover {
-    border-color: lightness(var(--color-contrast-lower), 0.85);
+    box-shadow: 0 0 0 1px lightness(var(--color-contrast-low), 0.85);
   }
 
   &:active, &:focus-within, &.choice-tag--checked {
-    border-color:var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary);
   }
 
   &:active, &:focus-within {
-    box-shadow: 0 0 0 2px alpha(var(--color-primary), 0.2);
+    box-shadow: 0 0 0 2px var(--color-primary), 0 0 0 4px alpha(var(--color-primary), 0.2);
+  }
+
+  &:focus-within:not(.choice-tag--checked) {
+    box-shadow: 0 0 0 1px var(--color-contrast-higher), 0 0 0 3px alpha(var(--color-contrast-higher), 0.2);
   }
 
   &.choice-tag--checked {
@@ -54,12 +58,12 @@ Usage: codyhouse.co/license
 // checkbox
 .choice-tag--checkbox {
   .choice-tag__icon {
-    color: var(--color-primary);
+    color: var(--color-contrast-low);
   }
 
   // not checked
   .choice-tag__icon-group {
-    stroke-width: var(--choice-tag-icon-stroke-width);
+    stroke-width: 2px;
 
     * {
       stroke-dasharray: 16;
@@ -85,6 +89,10 @@ Usage: codyhouse.co/license
   }
 
   // checked
+  input:checked + .choice-tag__icon {
+    color: var(--color-primary);
+  }
+
   input:checked + .choice-tag__icon .choice-tag__icon-group {
     :nth-child(1) {
       stroke-dashoffset: 23;
@@ -114,7 +122,7 @@ Usage: codyhouse.co/license
   .choice-tag__icon-group {
     :nth-child(1) {
       fill: none;
-      stroke-width: var(--choice-tag-icon-stroke-width); // radio dot stroke width
+      stroke-width: 1px; // radio dot stroke width
     }
   
     :nth-child(2) {

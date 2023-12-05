@@ -12859,15 +12859,14 @@ Usage: codyhouse.co/license
 -------------------------------- */
 :root {
   --choice-tag-icon-size: 16px;
-  --choice-tag-icon-stroke-width: 2px;
 }
 
 .choice-tag {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-xs) var(--space-sm);
   border-radius: 50em;
-  border: 1px solid var(--color-contrast-lower);
+  box-shadow: 0 0 0 1px var(--color-contrast-lower);
   cursor: pointer;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -12875,13 +12874,16 @@ Usage: codyhouse.co/license
   transition: 0.2s;
 }
 .choice-tag:hover {
-  border-color: hsl(var(--color-contrast-lower-h), var(--color-contrast-lower-s), calc(var(--color-contrast-lower-l) * 0.85));
+  box-shadow: 0 0 0 1px hsl(var(--color-contrast-low-h), var(--color-contrast-low-s), calc(var(--color-contrast-low-l) * 0.85));
 }
 .choice-tag:active, .choice-tag:focus-within, .choice-tag.choice-tag--checked {
-  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary);
 }
 .choice-tag:active, .choice-tag:focus-within {
-  box-shadow: 0 0 0 2px hsla(var(--color-primary-h), var(--color-primary-s), var(--color-primary-l), 0.2);
+  box-shadow: 0 0 0 2px var(--color-primary), 0 0 0 4px hsla(var(--color-primary-h), var(--color-primary-s), var(--color-primary-l), 0.2);
+}
+.choice-tag:focus-within:not(.choice-tag--checked) {
+  box-shadow: 0 0 0 1px var(--color-contrast-higher), 0 0 0 3px hsla(var(--color-contrast-higher-h), var(--color-contrast-higher-s), var(--color-contrast-higher-l), 0.2);
 }
 .choice-tag.choice-tag--checked {
   background-color: hsla(var(--color-primary-h), var(--color-primary-s), var(--color-primary-l), 0.08);
@@ -12896,10 +12898,10 @@ Usage: codyhouse.co/license
 }
 
 .choice-tag--checkbox .choice-tag__icon {
-  color: var(--color-primary);
+  color: var(--color-contrast-low);
 }
 .choice-tag--checkbox .choice-tag__icon-group {
-  stroke-width: var(--choice-tag-icon-stroke-width);
+  stroke-width: 2px;
 }
 .choice-tag--checkbox .choice-tag__icon-group * {
   stroke-dasharray: 16;
@@ -12917,6 +12919,9 @@ Usage: codyhouse.co/license
 .choice-tag--checkbox .choice-tag__icon-group :nth-child(3) {
   transition: stroke-dashoffset 0.3s;
   stroke-dashoffset: 0;
+}
+.choice-tag--checkbox input:checked + .choice-tag__icon {
+  color: var(--color-primary);
 }
 .choice-tag--checkbox input:checked + .choice-tag__icon .choice-tag__icon-group :nth-child(1) {
   stroke-dashoffset: 23;
@@ -12937,7 +12942,7 @@ Usage: codyhouse.co/license
 }
 .choice-tag--radio .choice-tag__icon-group :nth-child(1) {
   fill: none;
-  stroke-width: var(--choice-tag-icon-stroke-width);
+  stroke-width: 1px;
 }
 .choice-tag--radio .choice-tag__icon-group :nth-child(2) {
   fill: var(--color-white);

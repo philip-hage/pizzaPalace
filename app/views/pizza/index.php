@@ -1,5 +1,6 @@
 <?php require APPROOT . '/views/includes/head.php'; ?>
 
+
 <!-- Nav Bar -->
 <header class="header position-sticky top-0 js-header" id="navbar">
     <div class="header__container container max-width-lg">
@@ -68,7 +69,7 @@
 
         <div class="text-component text-sm">
             <h1 class="toast__title text-md">Thank you</h1>
-            <p class="toast__p">Je moeder paste niet in de cart.</p>
+            <p class="toast__p"></p>
         </div>
 
         <button class="reset toast__close-btn margin-left-xxxxs js-toast__close-btn js-tab-focus">
@@ -80,6 +81,45 @@
                 </g>
             </svg>
         </button>
+    </div>
+</div>
+
+<div class="slideshow-pm padding-y-md js-slideshow-pm small-slider" data-swipe="on" data-pm-nav="on">
+    <p class="sr-only">Slideshow items</p>
+    <div class="slideshow-pm__content">
+        <ul class="slideshow-pm__list js-slideshow-pm__list">
+            <?php foreach ($data['promotions'] as $promotion) : ?>
+                <li class="slideshow-pm__item js-slideshow-pm__item">
+                    <figure class="aspect-ratio-16:9 width-100%">
+                        <img src="<?= $promotion->imagePath ?>" alt="Image description">
+                    </figure>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+
+        <ul>
+            <li class="slideshow-pm__control-wrapper js-slideshow-pm__control-wrapper">
+                <button class="slideshow-pm__control reset js-tab-focus">
+                    <svg class="icon" viewBox="0 0 30 30">
+                        <title>Show previous slide</title>
+                        <g fill="currentColor">
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 1L9 15l10 14"></path>
+                        </g>
+                    </svg>
+                </button>
+            </li>
+
+            <li class="slideshow-pm__control-wrapper js-slideshow-pm__control-wrapper">
+                <button class="slideshow-pm__control reset js-tab-focus">
+                    <svg class="icon" viewBox="0 0 30 30">
+                        <title>Show next slide</title>
+                        <g fill="currentColor">
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 1l10 14-10 14"></path>
+                        </g>
+                    </svg>
+                </button>
+            </li>
+        </ul>
     </div>
 </div>
 
@@ -108,13 +148,12 @@
                         </button>
                     </header>
 
-                    <!-- <form id="filter-form" class="position-relative z-index-1 js-adv-filter__form" action="" method="get"> -->
                     <form>
-                        <div class="padding-md padding-0@md margin-bottom-sm@md">
+                        <div class="padding-md padding-0@md margin-bottom-sm@md js-filter-tab">
                             <a href="<?= URLROOT ?>pizzacontroller/overview/" class="reset text-sm color-contrast-high text-underline cursor-pointer margin-bottom-sm text-xs@md js-adv-filter__reset js-tab-focus" type="reset">Reset all filters</a>
 
                             <div class="search-input search-input--icon-left text-sm@md">
-                                <input class="search-input__input form-control" type="search" name="search-products" id="search-products" placeholder="Try category 1..." aria-label="Search" data-filter="searchInput" aria-controls="adv-filter-gallery">
+                                <input class="search-input__input form-control" type="search" name="search" id="search-products" placeholder="Search products.." aria-label="Search" data-filter="searchInput" aria-controls="adv-filter-gallery">
 
                                 <button class="search-input__btn">
                                     <svg class="icon" viewBox="0 0 20 20">
@@ -192,11 +231,11 @@
                                 </div>
                             </li>
 
-                            <li class="accordion__item accordion__item--is-open js-accordion__item js-adv-filter__item" data-number-format="${n}">
+                            <li class="accordion__item accordion__item--is-open js-accordion__item js-adv-filter__item" data-number-format="€{n}">
                                 <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
                                     <div>
                                         <div class="text-sm@md">Price</div>
-                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">$0 - $100</span></div>
+                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">€0 - €50</span></div>
                                     </div>
 
                                     <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
@@ -212,16 +251,16 @@
                                         <div class="slider slider--multi-value js-slider js-filter__custom-control" aria-controls="adv-filter-gallery" data-filter="priceRange">
                                             <div class="slider__range">
                                                 <label class="sr-only" for="slider-min-value">Slider min value</label>
-                                                <input class="slider__input" type="range" id="slider-min-value" name="slider-min-value" min="0" max="100" step="1" value="0">
+                                                <input class="slider__input" type="range" id="slider-min-value" name="pricemin" min="0" max="50" step="1" value="0">
                                             </div>
 
                                             <div class="slider__range">
                                                 <label class="sr-only" for="slider-max-value">Slider max value</label>
-                                                <input class="slider__input" type="range" id="slider-max-value" name="slider-max-value" min="0" max="100" step="1" value="100">
+                                                <input class="slider__input" type="range" id="slider-max-value" name="pricemax" min="0" max="50" step="1" value="50">
                                             </div>
 
                                             <div class="margin-top-xs text-center text-sm" aria-hidden="true">
-                                                <span class="slider__value">$<span class="js-slider__value">0</span> - $<span class="js-slider__value">100</span></span>
+                                                <span class="slider__value">€<span class="js-slider__value">0</span> - €<span class="js-slider__value">50</span></span>
                                             </div>
                                         </div>
                                     </div>
@@ -232,7 +271,7 @@
                                 <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
                                     <div>
                                         <div class="text-sm@md">Rating</div>
-                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">all</span></div>
+                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">All</span></div>
                                     </div>
 
                                     <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
@@ -246,10 +285,10 @@
                                 <div class="accordion__panel js-accordion__panel">
                                     <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md">
                                         <div class="flex justify-between items-center">
-                                            <label class="text-sm" for="index-value">Quantity</label>
+                                            <label class="text-sm" for="index-value">Rating</label>
 
                                             <div class="number-input number-input--v2 js-number-input js-filter__custom-control" aria-controls="adv-filter-gallery" data-filter="indexValue">
-                                                <input class="form-control text-sm@md js-number-input__value" type="number" name="index-value" id="index-value" min="1" max="5" step="1" value="1">
+                                                <input class="form-control text-sm@md js-number-input__value" type="number" name="rating" id="index-value" min="0" max="5" step="1" value="0">
 
                                                 <button class="reset number-input__btn number-input__btn--plus js-number-input__btn" aria-label="Increase Number">
                                                     <svg class="icon" viewBox="0 0 12 12" aria-hidden="true">
@@ -313,18 +352,6 @@
                 <div class="flex items-center justify-between margin-bottom-sm">
                     <p class="text-sm"><span class="js-adv-filter__results-count"></span> results</p>
                 </div>
-                <div class="flex items-center justify-between margin-bottom-sm">
-                    <p class="text-sm"><span class="js-adv-filter__results-count">12</span> results</p>
-                    <div class="flex items-baseline">
-                        <label class="text-sm color-contrast-medium margin-right-xs" for="select-sorting">Sort:</label>
-                        <?php
-                        // Generate links for each sorting option within the same container
-                        $currentUrl = strtok($_SERVER["REQUEST_URI"], '?');
-                        ?>
-                        <a href="<?php echo $currentUrl; ?>?sort=price-asc" class="text-sm color-contrast-medium margin-right-xs">Price Ascending</a>
-                        <a href="<?php echo $currentUrl; ?>?sort=price-desc" class="text-sm color-contrast-medium margin-right-xs">Price Descending</a>
-                    </div>
-                </div>
                 <div>
                     <ul class="grid gap-sm js-adv-filter__gallery" id="adv-filter-gallery">
                         <?php foreach ($data['products'] as $product) : ?>
@@ -343,6 +370,11 @@
                                         <div class="margin-top-xs">
                                             <span class="prod-card__price">€<?= $product->productPrice ?></span>
                                         </div>
+                                        <?php if (isset($product->productRating)) : ?>
+                                            <div class="margin-top-xs">
+                                            <span class="prod-card__price"><?= $product->productRating ?> ☆</span>
+                                        </div>
+                                        <?php endif; ?>
                                         <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
                                         <input type="hidden" class="productId" value="<?= $product->productId ?>">
                                         <input type="hidden" class="productName" value="<?= $product->productName ?>">
@@ -391,7 +423,7 @@
         </footer>
     </div>
 </div>
-</div>
+
 <br>
 
 <!-- Pagination -->

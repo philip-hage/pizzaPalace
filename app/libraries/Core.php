@@ -155,7 +155,7 @@ class Core
 
 
                 $filteredParams = array_filter($params, function ($value) {
-                    return !empty($value) && $value !== 'NULL';
+                    return !empty($value) && $value !== 'NULL' && $value !== '';
                 });
 
 
@@ -171,9 +171,9 @@ class Core
                 // Iterate through each key-value pair
                 foreach ($filteredParams as $key => $value) {
                     // Check if the key is "ingredients"
-                    if ($key === 'ingredients' && is_array($value)) {
+                    if (is_array($value)) {
                         // If the key is "ingredients" and the value is an array, format it as "key[value1,value2];"
-                        $newUrl .= $key . '[' . implode(',', $value) . '];';
+                        $newUrl .= $key . ':[' . implode(',', $value) . '];';
                     } else {
                         // If the key is not "ingredients" or the value is not an array, append key and value to the URL format
                         $newUrl .= $key . ':' . $value . ';';
