@@ -77,6 +77,28 @@ class ProductModel
         return $this->db->resultSet();
     }
 
+    public function getProductsByPagination($offset, $limit)
+    {
+        $this->db->query("SELECT productId,
+                                 productName,
+                                 productPrice,
+                                 productType  
+                                 FROM products 
+                                 WHERE productIsActive = 1
+                                 LIMIT :offset, :limit");
+        $this->db->bind(':offset', $offset);
+        $this->db->bind(':limit', $limit);
+        return $this->db->resultSet();
+    }
+
+    public function getTotalProductCount()
+    {
+        $this->db->query("SELECT COUNT(*) as total FROM products WHERE productIsActive = 1");
+        $result = $this->db->single();
+
+        return $result->total;
+    }
+
     public function getProductBySearch($params = NULL)
     {
         $searchProduct = isset($params['search']) ? $params['search'] : null;
@@ -182,6 +204,63 @@ class ProductModel
                                  FROM reviews
                                  WHERE reviewEntityId = :productId');
         $this->db->bind(':productId', $productId);
+        return $this->db->resultSet();
+    }
+
+    public function getProductsByFilters($filters = [])
+    {
+        $query = "SELECT DISTINCT p.productId,
+                     p.productName,
+                     p.productPrice,
+                     p.productType 
+              FROM products as p
+              WHERE p.productIsActive = 1";
+
+        // Add conditions based on the provided filters
+        if (isset($filters['type'])) {
+            $query .= " AND p.productType = :type";
+        }
+
+        if (isset($filters['ingredients'])) {
+            $ingredientPlaceholders = implode(',', array_map(function ($index) {
+                return ":ingredient{$index}";
+            }, array_keys($filters['ingredients'])));
+
+            $query .= " AND p.productId IN (SELECT DISTINCT phi.productId FROM producthasingredients as phi WHERE phi.ingredientId IN ({$ingredientPlaceholders}))";
+        }
+
+        if (isset($filters['rating'])) {
+            $query .= " AND p.productId IN (SELECT DISTINCT r.reviewEntityId FROM reviews as r WHERE r.reviewRating >= :rating)";
+        }
+
+        if (isset($filters['search'])) {
+            $query .= " AND p.productName LIKE :search";
+        }
+
+        if (isset($filters['price'])) {
+            $query .= " AND p.productPrice BETWEEN :priceMin AND :priceMax";
+        }
+
+        // Execute the query and bind parameters
+        $this->db->query($query);
+
+        foreach ($filters as $key => $value) {
+            if ($key === 'ingredients') {
+                foreach ($value as $index => $ingredientId) {
+                    $this->db->bind(":ingredient{$index}", $ingredientId);
+                }
+            } elseif ($key === 'price') {
+                // Handle price as a range
+                $this->db->bind(':priceMin', $value['min']);
+                $this->db->bind(':priceMax', $value['max']);
+            } elseif ($key === 'search') {
+                // Handle search
+                $this->db->bind(':search', '%' . $value . '%');
+            } else {
+                $this->db->bind(":$key", $value);
+            }
+        }
+
         return $this->db->resultSet();
     }
 }

@@ -1,8 +1,7 @@
 <?php require APPROOT . '/views/includes/head.php'; ?>
 
-
 <!-- Nav Bar -->
-<header class="header position-sticky top-0 js-header" id="navbar">
+<header class="header position-relative js-header" id="navbar">
     <div class="header__container container max-width-lg">
         <div class="header__logo">
             <a href="">
@@ -124,6 +123,8 @@
 </div>
 
 
+
+
 <!-- filter on the left side -->
 <section class="adv-filter padding-y-lg js-adv-filter">
     <div class="container max-width-adaptive-lg">
@@ -150,10 +151,10 @@
 
                     <form>
                         <div class="padding-md padding-0@md margin-bottom-sm@md js-filter-tab">
-                            <a href="<?= URLROOT ?>pizzacontroller/overview/" class="reset text-sm color-contrast-high text-underline cursor-pointer margin-bottom-sm text-xs@md js-adv-filter__reset js-tab-focus" type="reset">Reset all filters</a>
+                            <a href="<?= URLROOT ?>Pizza/overview/" class="reset text-sm color-contrast-high text-underline cursor-pointer margin-bottom-sm text-xs@md js-adv-filter__reset js-tab-focus" type="reset">Reset all filters</a>
 
                             <div class="search-input search-input--icon-left text-sm@md">
-                                <input class="search-input__input form-control" type="search" name="search" id="search-products" placeholder="Search products.." aria-label="Search" data-filter="searchInput" aria-controls="adv-filter-gallery">
+                                <input class="search-input__input form-control" type="search" name="search" id="search-products" value="<?= empty($data['params']['search']) ? '' : $data['params']['search'] ?>" placeholder="Search products.." aria-label="Search" data-filter="searchInput" aria-controls="adv-filter-gallery">
 
                                 <button class="search-input__btn">
                                     <svg class="icon" viewBox="0 0 20 20">
@@ -172,7 +173,7 @@
                                 <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
                                     <div>
                                         <div class="text-sm@md">Ingredients</div>
-                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">All</span></div>
+                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection"><?= empty($data['params']['ingredients']) ? 'All' : count($data['params']['ingredients']) . ' selected' ?></span></div>
                                     </div>
 
                                     <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
@@ -183,26 +184,24 @@
                                     </svg>
                                 </button>
 
-
                                 <div class="accordion__panel js-accordion__panel">
                                     <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md">
                                         <!-- 👆 aria-controls -> filter plugin -->
                                         <!-- 👆 data-btn-labels, data-ellipsis, data-btn-class -> read more component -->
                                         <?php foreach ($data['ingredients'] as $ingredient) : ?>
                                             <div>
-                                                <input class="checkbox" name="ingredients" type="checkbox" id="checkbox-<?= $ingredient->ingredientId ?>" value="<?= $ingredient->ingredientId ?>" data-filter="<?= $ingredient->ingredientId ?>">
+                                                <input class="checkbox" name="ingredients" type="checkbox" id="checkbox-<?= $ingredient->ingredientId ?>" value="<?= $ingredient->ingredientId ?>" data-filter="<?= $ingredient->ingredientId ?>" <?= in_array($ingredient->ingredientId, $data['params']['ingredients'] ?? []) ? 'checked' : '' ?> onclick="updateActiveFilters()">
                                                 <label for="checkbox-<?= $ingredient->ingredientId ?>"><?= $ingredient->ingredientName ?></label>
                                             </div>
                                         <?php endforeach; ?>
                                     </div>
                                 </div>
                             </li>
-
-                            <li class="accordion__item js-accordion__item js-adv-filter__item" data-default-text="All">
+                            <li class="accordion__item js-accordion__item js-adv-filter__item accordion__item--is-open" data-default-text="All">
                                 <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
                                     <div>
                                         <div class="text-sm@md">Products</div>
-                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">All</span></div>
+                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection"><?= empty($data['params']['type']) ? 'All' : $data['params']['type'] ?></span></div>
                                     </div>
 
                                     <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
@@ -217,12 +216,12 @@
                                     <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md">
                                         <ul class="adv-filter__radio-list flex flex-column gap-xxxs" aria-controls="adv-filter-gallery">
                                             <li>
-                                                <input class="radio" type="radio" name="type" id="radio-all" value="" data-filter="*" checked>
+                                                <input class="radio" type="radio" name="type" id="radio-all" value="" data-filter="*" <?= empty($data['params']['type']) ? 'checked' : '' ?>>
                                                 <label for="radio-all">All</label>
                                             </li>
                                             <?php foreach ($data['productType'] as $key => $value) : ?>
                                                 <li>
-                                                    <input class="radio" type="radio" name="type" id="radio-<?= $key ?>" data-filter="<?= $key ?>" value="<?= $key ?>">
+                                                    <input class="radio" type="radio" name="type" id="radio-<?= $key ?>" data-filter="<?= $key ?>" value="<?= $key ?>" <?= ($data['params']['type'] ?? '') == $key ? 'checked' : '' ?>>
                                                     <label for="radio-<?= $key ?>"><?= $value ?></label>
                                                 </li>
                                             <?php endforeach; ?>
@@ -251,12 +250,12 @@
                                         <div class="slider slider--multi-value js-slider js-filter__custom-control" aria-controls="adv-filter-gallery" data-filter="priceRange">
                                             <div class="slider__range">
                                                 <label class="sr-only" for="slider-min-value">Slider min value</label>
-                                                <input class="slider__input" type="range" id="slider-min-value" name="pricemin" min="0" max="50" step="1" value="0">
+                                                <input class="slider__input" type="range" id="slider-min-value" name="pricemin" min="0" max="50" step="1" value="<?= $data['params']['pricemin'] ?? '0' ?>">
                                             </div>
 
                                             <div class="slider__range">
                                                 <label class="sr-only" for="slider-max-value">Slider max value</label>
-                                                <input class="slider__input" type="range" id="slider-max-value" name="pricemax" min="0" max="50" step="1" value="50">
+                                                <input class="slider__input" type="range" id="slider-max-value" name="pricemax" min="0" max="50" step="1" value="<?= $data['params']['pricemax'] ?? '50' ?>">
                                             </div>
 
                                             <div class="margin-top-xs text-center text-sm" aria-hidden="true">
@@ -267,11 +266,11 @@
                                 </div>
                             </li>
 
-                            <li class="accordion__item js-accordion__item js-adv-filter__item" data-default-text="All" data-multi-select-text="{n} filters selected" data-number-format="{n}">
+                            <li class="accordion__item js-accordion__item js-adv-filter__item accordion__item--is-open" data-default-text="All" data-multi-select-text="{n} filters selected" data-number-format="{n}">
                                 <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
                                     <div>
                                         <div class="text-sm@md">Rating</div>
-                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">All</span></div>
+                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection"><?= empty($data['params']['rating']) ? 'All' : $data['params']['rating'] ?></span></div>
                                     </div>
 
                                     <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
@@ -288,7 +287,7 @@
                                             <label class="text-sm" for="index-value">Rating</label>
 
                                             <div class="number-input number-input--v2 js-number-input js-filter__custom-control" aria-controls="adv-filter-gallery" data-filter="indexValue">
-                                                <input class="form-control text-sm@md js-number-input__value" type="number" name="rating" id="index-value" min="0" max="5" step="1" value="0">
+                                                <input class="form-control text-sm@md js-number-input__value" type="number" name="rating" id="index-value" min="0" max="5" step="1" value="<?= $data['params']['rating'] ?? '0' ?>">
 
                                                 <button class="reset number-input__btn number-input__btn--plus js-number-input__btn" aria-label="Increase Number">
                                                     <svg class="icon" viewBox="0 0 12 12" aria-hidden="true">
@@ -372,8 +371,8 @@
                                         </div>
                                         <?php if (isset($product->productRating)) : ?>
                                             <div class="margin-top-xs">
-                                            <span class="prod-card__price"><?= $product->productRating ?> ☆</span>
-                                        </div>
+                                                <span class="prod-card__price"><?= $product->productRating ?> ☆</span>
+                                            </div>
                                         <?php endif; ?>
                                         <button class="btn btn--primary text-sm width-100% addToCartBtn">Add To Cart</button>
                                         <input type="hidden" class="productId" value="<?= $product->productId ?>">
@@ -419,7 +418,7 @@
 
         <footer class="padding-x-sm padding-y-xs border-top border-contrast-lower flex-shrink-0">
             <p class="text-sm flex justify-between" id="totalPrice"><span>Subtotal:</span> <span></span></p>
-            <a href="<?= URLROOT; ?>pizzacontroller/pizzaCheckout" class="btn btn--primary btn--md width-100% margin-top-xs">Checkout &rarr;</a>
+            <a href="<?= URLROOT; ?>Pizza/pizzaCheckout" class="btn btn--primary btn--md width-100% margin-top-xs">Checkout &rarr;</a>
         </footer>
     </div>
 </div>
@@ -427,10 +426,10 @@
 <br>
 
 <!-- Pagination -->
-<nav class="pagination " aria-label="Pagination">
+<nav class="pagination" aria-label="Pagination">
     <ol class="pagination__list flex flex-wrap gap-xxxs justify-center">
         <li>
-            <a href="#0" class="pagination__item pagination__item--disabled" aria-label="Go to previous page">
+            <a href="?page=<?php echo max(1, $data['pageNumber'] - 1); ?>" class="pagination__item <?php echo ($data['pageNumber'] <= 1) ? 'pagination__item--disabled' : ''; ?>" aria-label="Go to previous page">
                 <svg class="icon icon--xs margin-right-xxxs flip-x" viewBox="0 0 16 16">
                     <polyline points="6 2 12 8 6 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                 </svg>
@@ -438,32 +437,16 @@
             </a>
         </li>
 
-        <li class="display@sm">
-            <a href="#0" class="pagination__item" aria-label="Go to page 1">1</a>
-        </li>
-
-        <li class="display@sm">
-            <a href="#0" class="pagination__item" aria-label="Go to page 2">2</a>
-        </li>
-
-        <li class="display@sm">
-            <a href="#0" class="pagination__item pagination__item--selected" aria-label="Current Page, page 3" aria-current="page">3</a>
-        </li>
-
-        <li class="display@sm">
-            <a href="#0" class="pagination__item" aria-label="Go to page 4">4</a>
-        </li>
-
-        <li class="display@sm" aria-hidden="true">
-            <span class="pagination__item pagination__item--ellipsis">...</span>
-        </li>
-
-        <li class="display@sm">
-            <a href="#0" class="pagination__item" aria-label="Go to page 20">20</a>
-        </li>
+        <?php for ($i = 1; $i <= $data['totalPages']; $i++) : ?>
+            <li class="display@sm">
+                <a href="?page=<?php echo $i; ?>" class="pagination__item <?php echo ($data['pageNumber'] == $i) ? 'pagination__item--selected' : ''; ?>" aria-label="Go to page <?php echo $i; ?>">
+                    <?php echo $i; ?>
+                </a>
+            </li>
+        <?php endfor; ?>
 
         <li>
-            <a href="#0" class="pagination__item" aria-label="Go to next page">
+            <a href="?page=<?php echo min($data['totalPages'], $data['pageNumber'] + 1); ?>" class="pagination__item <?php echo ($data['pageNumber'] >= $data['totalPages']) ? 'pagination__item--disabled' : ''; ?>" aria-label="Go to next page">
                 <span>Next</span>
                 <svg class="icon icon--xs margin-left-xxxs" viewBox="0 0 16 16">
                     <polyline points="6 2 12 8 6 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />

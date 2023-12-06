@@ -1,8 +1,6 @@
 <?php
 
-use function PHPSTORM_META\map;
-
-class PizzaController extends Controller
+class Pizza extends Controller
 {
     private $productModel;
     private $screenModel;
@@ -30,7 +28,6 @@ class PizzaController extends Controller
     public function overview($params = NULL)
     {
         global $productType;
-
         $ingredients = $this->ingredientModel->getIngredients();
         $stores = $this->storeModel->getStores();
         $promotions = $this->promotionModel->getPromotions();
@@ -46,21 +43,39 @@ class PizzaController extends Controller
         $priceMin = isset($params['pricemin']) ? $params['pricemin'] : null;
         $priceMax = isset($params['pricemax']) ? $params['pricemax'] : null;
 
-        if ($typeFilter || $selectedIngredients || $rating || $searchProduct || $priceMin || $priceMax) {
+        if ($typeFilter || $selectedIngredients || $rating || $searchProduct || $priceMin) {
+
+            // Initialize an empty array to store filter conditions
+            $filterConditions = [];
+
+            if ($typeFilter) {
+                $filterConditions['type'] = $typeFilter;
+            } else {
+                $productsResult = $this->productModel->getProducts();
+            }
 
             if ($selectedIngredients) {
-                $productsResult = $this->productModel->getProductByIngredient(['type' => $typeFilter, 'ingredients' => $selectedIngredients]);
-            } elseif ($typeFilter) {
-                $productsResult = $this->productModel->getProductByType(['type' => $typeFilter]);
-            } elseif ($searchProduct)
-            {
-                $productsResult = $this->productModel->getProductBySearch(['search' => $searchProduct]);
-            } elseif ($priceMax)
-            {
-                $productsResult = $this->productModel->getProductByPrice(['pricemin' => $priceMin, 'pricemax' => $priceMax]);
-            }
-             else {
+                $filterConditions['ingredients'] = $selectedIngredients;
+            } else {
                 $productsResult = $this->productModel->getProducts();
+            }
+
+            if ($rating) {
+                $filterConditions['rating'] = $rating;
+            } else {
+                $productsResult = $this->productModel->getProducts();
+            }
+
+            if ($priceMin) {
+                $filterConditions['price'] = ['min' => $priceMin, 'max' => $priceMax];
+            } else {
+                $productsResult = $this->productModel->getProducts();
+            }
+
+            if ($searchProduct) {
+                $productsResult = $this->productModel->getProductBySearch(['search' => $searchProduct]);
+            } else {
+                $productsResult = $this->productModel->getProductsByFilters($filterConditions);
             }
 
             // Group products by productId to eliminate duplicates
@@ -97,7 +112,24 @@ class PizzaController extends Controller
                 $product->imagePath = $this->screenModel->getScreenImage($product->productId);
             }
         } else {
-            $products = $this->productModel->getProducts();
+            // Extract page number from $params
+            $pageNumber = isset($params['page']) ? intval($params['page']) : 1;
+
+            // Define records per page and calculate offset
+            $recordsPerPage = 4; // You can adjust this based on your needs
+            $offset = ($pageNumber - 1) * $recordsPerPage;
+
+            $products = $this->productModel->getProductsByPagination($offset, $recordsPerPage);
+
+            $countProducts = $this->productModel->getTotalProductCount();
+
+            // Calculate total number of pages
+            $totalPages = ceil($countProducts / $recordsPerPage);
+
+            // Ensure $pageNumber is within valid range
+            $pageNumber = max(1, min($pageNumber, $totalPages));
+
+            // $products = $this->productModel->getProducts();
 
             foreach ($products as $product) {
                 $product->imagePath = $this->screenModel->getScreenImage($product->productId);
@@ -111,7 +143,13 @@ class PizzaController extends Controller
             'stores' => $stores,
             'products' => $products,
             'promotions' => $promotions,
-
+            'priceMin' => $priceMin,
+            'priceMax' => $priceMax,
+            'params' => $params,
+            'pageNumber' => $pageNumber,
+            'recordsPerPage' => $recordsPerPage,
+            'totalPages' => $totalPages,
+            'countProducts' => $countProducts,
         ];
 
         $this->view('pizza/index', $data);

@@ -190,4 +190,17 @@ document.addEventListener("DOMContentLoaded", function () {
   updateSelectedProducts();
 
   updateCartCount();
+
+  function updateActiveFilters() {
+    const selectedIngredients = Array.from(
+      document.querySelectorAll('input[name="ingredients"]:checked')
+    ).map((checkbox) => checkbox.value);
+    const activeFiltersElement = document.querySelector(
+      ".js-adv-filter__selection"
+    );
+    activeFiltersElement.textContent =
+      selectedIngredients.length > 0
+        ? `${selectedIngredients.length} selected`
+        : "All";
+  }
 });

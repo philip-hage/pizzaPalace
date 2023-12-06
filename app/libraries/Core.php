@@ -20,8 +20,9 @@ class Core
             //destroy the first part of the url after the the urlroot
             // unset($url[0]);
         } else {
+            require APPROOT . '/views/includes/404.php';
+            exit;
         }
-
 
         //if the controller doesn't exist then change the controller to $currentController
         require_once APPROOT . '/controllers/' . $this->currentController . '.php';
@@ -105,7 +106,6 @@ class Core
         // Remove the base URL from the request
         $incoming = str_replace("/pizzapalace/", "", $incoming);
 
-
         if (isset($incoming)) {
             //remove the backslash from the front of the url
             $incoming = trim($incoming, "/");
@@ -127,13 +127,8 @@ class Core
                 // Get everything behind the "?" character
                 $queryString = substr($incoming, strpos($incoming, '?') + 1);
 
-                // Helper::dump($queryString);
-
                 // Explode the query string into an array
                 $queryParamsArray = explode('&', $queryString);
-
-                // Helper::dump($queryParamsArray);
-                // exit;
 
                 // Initialize an associative array to store key-value pairs
                 $params = array();
@@ -153,11 +148,9 @@ class Core
                     }
                 }
 
-
                 $filteredParams = array_filter($params, function ($value) {
                     return !empty($value) && $value !== 'NULL' && $value !== '';
                 });
-
 
                 // Parse the URL
                 $urlParts = parse_url($url);
@@ -181,7 +174,6 @@ class Core
                 }
 
                 $newUrl .= "}/";
-
 
                 // Check if the URL contains a "sort" parameter
                 if (strpos($incoming, 'sort=') !== false) {
@@ -232,7 +224,7 @@ class Core
 
             return $output;
         } else {
-            return array('pizzacontroller', 'overview');
+            return array('Pizza', 'overview');
         }
     }
 }
