@@ -28,128 +28,141 @@ class Pizza extends Controller
     public function overview($params = NULL)
     {
         global $productType;
-        $ingredients = $this->ingredientModel->getIngredients();
+
+        $promos = $this->promotionModel->getPromotions();
         $stores = $this->storeModel->getStores();
-        $promotions = $this->promotionModel->getPromotions();
+        $reviews = $this->productModel->getReviews();
+        $ingredients = $this->ingredientModel->getIngredients();
 
-        foreach ($promotions as $promotion) {
-            $promotion->imagePath = $this->screenModel->getScreenImage($promotion->promotionId);
-        }
+        $typeFilter = $params['type'] ?? null;
+        $selectedIngredients = $params['ingredients'] ?? [];
+        $rating = $params['rating'] ?? null;
+        $searchProduct = $params['search'] ?? null;
+        $priceMin = $params['pricemin'] ?? null;
+        $priceMax = $params['pricemax'] ?? null;
 
-        $typeFilter = isset($params['type']) ? $params['type'] : null;
-        $selectedIngredients = isset($params['ingredients']) ? $params['ingredients'] : [];
-        $rating = isset($params['rating']) ? $params['rating'] : null;
-        $searchProduct = isset($params['search']) ? $params['search'] : null;
-        $priceMin = isset($params['pricemin']) ? $params['pricemin'] : null;
-        $priceMax = isset($params['pricemax']) ? $params['pricemax'] : null;
+        $pageNumber = isset($params['page']) ? intval($params['page']) : 1;
 
-        if ($typeFilter || $selectedIngredients || $rating || $searchProduct || $priceMin) {
+        $recordsPerPage = 6; // You want to display 4 products per page
+        $offset = ($pageNumber - 1) * $recordsPerPage;
 
-            // Initialize an empty array to store filter conditions
-            $filterConditions = [];
+        $productsResult = $this->productModel->getHomePageProducts($params, $offset, $recordsPerPage);
+        $totalProducts = count($this->productModel->getHomePageProducts($params));
 
-            if ($typeFilter) {
-                $filterConditions['type'] = $typeFilter;
-            } else {
-                $productsResult = $this->productModel->getProducts();
-            }
+        $totalPages = ceil($totalProducts / $recordsPerPage);
+        $pageNumber = max(1, min($pageNumber, $totalPages));
 
-            if ($selectedIngredients) {
-                $filterConditions['ingredients'] = $selectedIngredients;
-            } else {
-                $productsResult = $this->productModel->getProducts();
-            }
+        // Group products by productId to eliminate duplicates
+        $products = [];
+        foreach ($productsResult as $product) {
+            $productId = $product->productId;
+            if (!isset($products[$productId])) {
+                $products[$productId] = $product;
+                if ($rating) {
+                    $ratings = $this->productModel->getReviewByProduct($productId);
+                    $totalRatings = count($ratings);
+                    $productRating = 0;
 
-            if ($rating) {
-                $filterConditions['rating'] = $rating;
-            } else {
-                $productsResult = $this->productModel->getProducts();
-            }
-
-            if ($priceMin) {
-                $filterConditions['price'] = ['min' => $priceMin, 'max' => $priceMax];
-            } else {
-                $productsResult = $this->productModel->getProducts();
-            }
-
-            if ($searchProduct) {
-                $productsResult = $this->productModel->getProductBySearch(['search' => $searchProduct]);
-            } else {
-                $productsResult = $this->productModel->getProductsByFilters($filterConditions);
-            }
-
-            // Group products by productId to eliminate duplicates
-            $products = [];
-            foreach ($productsResult as $product) {
-                $productId = $product->productId;
-                if (!isset($products[$productId])) {
-                    $products[$productId] = $product;
-                    if ($rating) {
-                        $ratings = $this->productModel->getReviewByProduct($productId);
-                        $totalRatings = count($ratings);
-                        $productRating = 0;
-
-                        if ($totalRatings > 0) {
-                            foreach ($ratings as $review) {
-                                $productRating = $productRating + $review->reviewRating;
-                            }
-                            $finalProductRating = (int)round($productRating / $totalRatings);
-                        } else {
-                            // Handle the case where there are no ratings (avoid division by zero)
-                            $finalProductRating = 0; // You can set a default value or handle it accordingly
+                    if ($totalRatings > 0) {
+                        foreach ($ratings as $review) {
+                            $productRating = $productRating + $review->reviewRating;
                         }
-                        if ($finalProductRating >= $rating) {
-                            $products[$productId]->productRating = $finalProductRating;
-                        } else {
-                            unset($products[$productId]);
-                        }
-                        // Helper::dump($rating);exit;
+                        $finalProductRating = (int)round($productRating / $totalRatings);
+                    } else {
+                        // Handle the case where there are no ratings (avoid division by zero)
+                        $finalProductRating = 0; // You can set a default value or handle it accordingly
+                    }
+                    if ($finalProductRating >= $rating) {
+                        $products[$productId]->productRating = $finalProductRating;
+                    } else {
+                        unset($products[$productId]);
                     }
                 }
             }
+        }
 
-            foreach ($products as $product) {
-                $product->imagePath = $this->screenModel->getScreenImage($product->productId);
-            }
-        } else {
-            // Extract page number from $params
-            $pageNumber = isset($params['page']) ? intval($params['page']) : 1;
+        foreach ($products as $product) {
+            $product->imagePath = $this->screenModel->getScreenImage($product->productId);
+        }
 
-            // Define records per page and calculate offset
-            $recordsPerPage = 4; // You can adjust this based on your needs
-            $offset = ($pageNumber - 1) * $recordsPerPage;
+        foreach ($promos as $promotion) {
+            $promotion->imagePath = $this->screenModel->getScreenImage($promotion->promotionId);
+        }
 
-            $products = $this->productModel->getProductsByPagination($offset, $recordsPerPage);
+        foreach ($reviews as $review) {
+            $review->imagePath = $this->screenModel->getScreenImage($review->reviewId);
+        }
 
-            $countProducts = $this->productModel->getTotalProductCount();
+        $nextPage = $pageNumber < $totalPages ? $pageNumber + 1 : null;
+        $prevPage = $pageNumber > 1 ? $pageNumber - 1 : null;
+        $numberButtons = [];
+        for ($i = 1; $i <= $totalPages; $i++) {
+            $numberButtons[] = $i;
+        }
 
-            // Calculate total number of pages
-            $totalPages = ceil($countProducts / $recordsPerPage);
+        $paginationButtons = [
+            'nextPage' => $nextPage,
+            'prevPage' => $prevPage,
+            'numberButtons' => $numberButtons
+        ];
 
-            // Ensure $pageNumber is within valid range
-            $pageNumber = max(1, min($pageNumber, $totalPages));
+        $urlQuery = [];
 
-            // $products = $this->productModel->getProducts();
+        foreach ($paginationButtons as $buttonName => $buttonValue) {
+            if (is_array($buttonValue)) {
+                foreach ($buttonValue as $numberButton) {
+                    $urlQuery[$buttonName][$numberButton] = URLROOT . "pizza/overview/{page:" . $numberButton . ";";
 
-            foreach ($products as $product) {
-                $product->imagePath = $this->screenModel->getScreenImage($product->productId);
+                    // Iterate through each key-value pair
+                    foreach ($params as $key => $value) {
+                        if ($key !== 'page') {
+                            // Check if the key is "ingredients"
+                            if (is_array($value)) {
+                                // If the key is "ingredients" and the value is an array, format it as "key[value1,value2];"
+                                $urlQuery[$buttonName][$numberButton] .= $key . ':[' . implode(',', $value) . '];';
+                            } else {
+                                // If the key is not "ingredients" or the value is not an array, append key and value to the URL format
+                                $urlQuery[$buttonName][$numberButton] .= $key . ':' . $value . ';';
+                            }
+                        }
+                    }
+                    $urlQuery[$buttonName][$numberButton] .= "}";
+                }
+            } else {
+                $urlQuery[$buttonName] = URLROOT . "pizza/overview/{page:" . $buttonValue . ";";
+
+                // Iterate through each key-value pair
+                foreach ($params as $key => $value) {
+                    if ($key !== 'page') {
+                        // Check if the key is "ingredients"
+                        if (is_array($value)) {
+                            // If the key is "ingredients" and the value is an array, format it as "key[value1,value2];"
+                            $urlQuery[$buttonName] .= $key . ':[' . implode(',', $value) . '];';
+                        } else {
+                            // If the key is not "ingredients" or the value is not an array, append key and value to the URL format
+                            $urlQuery[$buttonName] .= $key . ':' . $value . ';';
+                        }
+                    }
+                }
+                $urlQuery[$buttonName] .= "}";
             }
         }
 
+        // Helper::dump($urlQuery); exit;
+
         $data = [
-            'title' => 'Pizza Overview',
+            'title' => "pizza Palace",
+            'promos' => $promos,
             'ingredients' => $ingredients,
             'productType' => $productType,
             'stores' => $stores,
             'products' => $products,
-            'promotions' => $promotions,
-            'priceMin' => $priceMin,
-            'priceMax' => $priceMax,
+            'reviews' => $reviews,
             'params' => $params,
-            'pageNumber' => $pageNumber,
-            'recordsPerPage' => $recordsPerPage,
+            'currentPage' => $pageNumber,
             'totalPages' => $totalPages,
-            'countProducts' => $countProducts,
+            'totalProducts' => $totalProducts,
+            'urlQuery' => $urlQuery,
         ];
 
         $this->view('pizza/index', $data);

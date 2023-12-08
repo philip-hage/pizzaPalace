@@ -1,5 +1,6 @@
 <?php require APPROOT . '/views/includes/head.php'; ?>
 
+
 <!-- Nav Bar -->
 <header class="header position-relative js-header" id="navbar">
     <div class="header__container container max-width-lg">
@@ -250,7 +251,7 @@
                                         <div class="slider slider--multi-value js-slider js-filter__custom-control" aria-controls="adv-filter-gallery" data-filter="priceRange">
                                             <div class="slider__range">
                                                 <label class="sr-only" for="slider-min-value">Slider min value</label>
-                                                <input class="slider__input" type="range" id="slider-min-value" name="pricemin" min="0" max="50" step="1" value="<?= $data['params']['pricemin'] ?? '0' ?>">
+                                                <input class="slider__input" type="range" id="slider-min-value" name="pricemin" min="0" max="49" step="1" value="<?= $data['params']['pricemin'] ?? '0' ?>">
                                             </div>
 
                                             <div class="slider__range">
@@ -328,7 +329,7 @@
                                         <div class="select width-100% js-select" data-trigger-class="btn btn--subtle flex-grow">
                                             <!-- data-trigger-class -> custom select component 👆 -->
                                             <select name="select-filter-option" id="select-filter-option" aria-controls="adv-filter-gallery" data-filter="true">
-                                                <option value="*" selected>All</option>
+                                                <option value="" selected>All</option>
                                                 <?php foreach ($data['stores'] as $store) : ?>
                                                     <option value="<?= $store->storeId ?>"><?= $store->storeName ?></option>
                                                 <?php endforeach; ?>
@@ -429,7 +430,8 @@
 <nav class="pagination" aria-label="Pagination">
     <ol class="pagination__list flex flex-wrap gap-xxxs justify-center">
         <li>
-            <a href="?page=<?php echo max(1, $data['pageNumber'] - 1); ?>" class="pagination__item <?php echo ($data['pageNumber'] <= 1) ? 'pagination__item--disabled' : ''; ?>" aria-label="Go to previous page">
+            <!-- Previous Page Link -->
+            <a href="<?= $data['urlQuery']['prevPage'] ?>" class="pagination__item <?= $data['currentPage'] == 1 ? 'pagination__item--disabled' : ''; ?>" aria-label="Go to previous page">
                 <svg class="icon icon--xs margin-right-xxxs flip-x" viewBox="0 0 16 16">
                     <polyline points="6 2 12 8 6 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                 </svg>
@@ -437,16 +439,34 @@
             </a>
         </li>
 
-        <?php for ($i = 1; $i <= $data['totalPages']; $i++) : ?>
-            <li class="display@sm">
-                <a href="?page=<?php echo $i; ?>" class="pagination__item <?php echo ($data['pageNumber'] == $i) ? 'pagination__item--selected' : ''; ?>" aria-label="Go to page <?php echo $i; ?>">
-                    <?php echo $i; ?>
-                </a>
-            </li>
-        <?php endfor; ?>
+        <!-- Loop through pages and generate pagination links -->
+        <?php
+        $numberButtons = $data['urlQuery']['numberButtons'];
+        $currentPage = $data['currentPage'];
+        $totalPages = $data['totalPages'];
+
+        for ($i = 1; $i <= $totalPages; $i++) :
+            if ($i <= 3 || $i >= $currentPage - 1 && $i <= $currentPage + 1 || $i > $totalPages - 3) : ?>
+                <!-- Page Link -->
+                <li class="display@sm">
+                    <a href="<?= $numberButtons[$i] ?>" class="pagination__item <?= $currentPage == $i ? 'pagination__item--selected' : ''; ?>" aria-label="Go to page <?= $i; ?>"><?= $i; ?></a>
+                </li>
+            <?php elseif ($i == 4 && $currentPage > 4) : ?>
+                <!-- Dots (...) after the third page if currentPage is greater than 4 -->
+                <li class="display@sm">
+                    <span class="pagination__item pagination__item--disabled">...</span>
+                </li>
+            <?php elseif ($i == $totalPages - 3 && $currentPage < $totalPages - 3) : ?>
+                <!-- Dots (...) before the last three pages if currentPage is less than totalPages - 3 -->
+                <li class="display@sm">
+                    <span class="pagination__item pagination__item--disabled">...</span>
+                </li>
+        <?php endif;
+        endfor; ?>
 
         <li>
-            <a href="?page=<?php echo min($data['totalPages'], $data['pageNumber'] + 1); ?>" class="pagination__item <?php echo ($data['pageNumber'] >= $data['totalPages']) ? 'pagination__item--disabled' : ''; ?>" aria-label="Go to next page">
+            <!-- Next Page Link -->
+            <a href="<?= $data['urlQuery']['nextPage'] ?>" class="pagination__item <?= $currentPage == $totalPages ? 'pagination__item--disabled' : ''; ?>" aria-label="Go to next page">
                 <span>Next</span>
                 <svg class="icon icon--xs margin-left-xxxs" viewBox="0 0 16 16">
                     <polyline points="6 2 12 8 6 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />

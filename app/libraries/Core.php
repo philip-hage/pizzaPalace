@@ -20,8 +20,6 @@ class Core
             //destroy the first part of the url after the the urlroot
             // unset($url[0]);
         } else {
-            require APPROOT . '/views/includes/404.php';
-            exit;
         }
 
         //if the controller doesn't exist then change the controller to $currentController

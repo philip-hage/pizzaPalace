@@ -207,14 +207,14 @@ class ProductModel
         return $this->db->resultSet();
     }
 
-    public function getProductsByFilters($filters = [])
+    public function getProductsByFilters($filters = [], $offset = NULL, $limit = NULL)
     {
         $query = "SELECT DISTINCT p.productId,
-                     p.productName,
-                     p.productPrice,
-                     p.productType 
-              FROM products as p
-              WHERE p.productIsActive = 1";
+                                  p.productName,
+                                  p.productPrice,
+                                  p.productType 
+                                  FROM products as p
+                                  WHERE p.productIsActive = 1";
 
         // Add conditions based on the provided filters
         if (isset($filters['type'])) {
@@ -237,30 +237,112 @@ class ProductModel
             $query .= " AND p.productName LIKE :search";
         }
 
-        if (isset($filters['price'])) {
-            $query .= " AND p.productPrice BETWEEN :priceMin AND :priceMax";
+        if (isset($filters['pricemax'])) {
+            $filters['pricemin'] = $filters['pricemin'] ?? 0;
+            $query .= " AND p.productPrice BETWEEN :pricemin AND :pricemax";
+        }
+
+        if (isset($limit) && !empty($limit) && isset($offset)) {
+            $query .= " LIMIT :offset, :limit";
         }
 
         // Execute the query and bind parameters
         $this->db->query($query);
+
+        if (isset($limit) && !empty($limit) && isset($offset)) {
+            $this->db->bind(':offset', $offset);
+            $this->db->bind(':limit', $limit);
+        }
 
         foreach ($filters as $key => $value) {
             if ($key === 'ingredients') {
                 foreach ($value as $index => $ingredientId) {
                     $this->db->bind(":ingredient{$index}", $ingredientId);
                 }
-            } elseif ($key === 'price') {
-                // Handle price as a range
-                $this->db->bind(':priceMin', $value['min']);
-                $this->db->bind(':priceMax', $value['max']);
             } elseif ($key === 'search') {
                 // Handle search
                 $this->db->bind(':search', '%' . $value . '%');
-            } else {
+            } elseif ($key !== 'page') { // Skip binding for 'page' parameter
                 $this->db->bind(":$key", $value);
             }
         }
 
+        return $this->db->resultSet();
+    }
+
+    public function getHomePageProducts($filters = [], $offset = NULL, $limit = NULL)
+    {
+        $query = "SELECT DISTINCT p.productId,
+                              p.productName,
+                              p.productPrice,
+                              p.productType 
+                              FROM products as p
+                              WHERE p.productIsActive = 1";
+
+        // Add conditions based on the provided filters
+        if (isset($filters['type'])) {
+            $query .= " AND p.productType = :type";
+        }
+
+        if (isset($filters['ingredients'])) {
+            $ingredientPlaceholders = implode(',', array_map(function ($index) {
+                return ":ingredient{$index}";
+            }, array_keys($filters['ingredients'])));
+
+            $query .= " AND p.productId IN (SELECT DISTINCT phi.productId FROM productshasingredients as phi WHERE phi.ingredientId IN ({$ingredientPlaceholders}))";
+        }
+
+        if (isset($filters['rating'])) {
+            $query .= " AND p.productId IN (SELECT DISTINCT r.reviewEntityId FROM reviews as r WHERE r.reviewRating >= :rating)";
+        }
+
+        if (isset($filters['search'])) {
+            $query .= " AND p.productName LIKE :search";
+        }
+
+        if (isset($filters['pricemax'])) {
+            $filters['pricemin'] = $filters['pricemin'] ?? 0;
+            $query .= " AND p.productPrice BETWEEN :pricemin AND :pricemax";
+        }
+
+        if (isset($offset) && isset($limit) && !empty($limit)) {
+            $query .= " LIMIT :offset, :limit";
+        }
+
+        // Execute the query and bind parameters
+        $this->db->query($query);
+
+        if (isset($offset) && isset($limit) && !empty($limit)) {
+            $this->db->bind(':offset', $offset);
+            $this->db->bind(':limit', $limit);
+        }
+
+        foreach ($filters as $key => $value) {
+            if ($key === 'ingredients') {
+                foreach ($value as $index => $ingredientId) {
+                    $this->db->bind(":ingredient{$index}", $ingredientId);
+                }
+            } elseif ($key === 'search') {
+                // Handle search
+                $this->db->bind(':search', '%' . $value . '%');
+            } elseif ($key !== 'page') {
+                $this->db->bind(":$key", $value);
+            }
+        }
+
+        return $this->db->resultSet();
+    }
+
+    public function getReviews()
+    {
+        $this->db->query("SELECT r.reviewId,
+                                 r.reviewCustomerId,
+                                 r.reviewRating,
+                                 c.customerFirstName,
+                                 c.customerLastName
+                                 FROM reviews as r
+                                 INNER JOIN customers as c ON r.reviewCustomerId = c.customerId
+                                 WHERE reviewIsActive = 1");
         return $this->db->resultSet();
     }
 }
