@@ -34,12 +34,7 @@ class Pizza extends Controller
         $reviews = $this->productModel->getReviews();
         $ingredients = $this->ingredientModel->getIngredients();
 
-        $typeFilter = $params['type'] ?? null;
-        $selectedIngredients = $params['ingredients'] ?? [];
         $rating = $params['rating'] ?? null;
-        $searchProduct = $params['search'] ?? null;
-        $priceMin = $params['pricemin'] ?? null;
-        $priceMax = $params['pricemax'] ?? null;
 
         $pageNumber = isset($params['page']) ? intval($params['page']) : 1;
 

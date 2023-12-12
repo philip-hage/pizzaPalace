@@ -16,11 +16,30 @@ buttons.forEach((button) => {
   });
 });
 
-function openToast(productName) {
-  var toast = document.querySelector(".js-toast");
-  toast.querySelector(".toast__p").innerHTML = productName + " added to cart";
-  openToastEvent = new CustomEvent("openToast"); // custom event
+function openToastSuccess(title, message) {
+  var toast = document.querySelector(".toast1");
+  var toastTitle = document.querySelector(".toast__title");
+  var toastP = document.querySelector(".toast__p");
+
+  toastTitle.textContent = title;
+  message = message.replace(/\+/g, " ");
+  toastP.textContent = message;
+
+  var openToastEvent = new CustomEvent("openToast");
   toast.dispatchEvent(openToastEvent);
+}
+
+function openToastFailed(title, message) {
+  var toast2 = document.querySelector(".toast2");
+  var toastTitle2 = document.querySelector(".title2");
+  var toastP2 = document.querySelector(".p2");
+
+  toastTitle2.textContent = title;
+  message = message.replace(/\+/g, " ");
+  toastP2.textContent = message;
+
+  var openToastEvent = new CustomEvent("openToast");
+  toast2.dispatchEvent(openToastEvent);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -204,3 +223,4 @@ document.addEventListener("DOMContentLoaded", function () {
         : "All";
   }
 });
+

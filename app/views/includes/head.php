@@ -18,3 +18,4 @@
 
 <body>
 
+    <?php session_start(); ?>
