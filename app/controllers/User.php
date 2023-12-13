@@ -21,43 +21,86 @@ class User extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            // Add a key 'success' to the array
+            $ajaxResponse = [
+                'success' => [
+                    'state' => 200,
+                    'message' => 'Succesfully signed up!'
+                ]
+            ];
 
-            // Check if the email is already registered
-            $emailExists = $this->userModel->checkEmailExists($post['customeremail']);
+            $customerEmail = $post['customeremail'];
+            $customerPassword = $post['customerpassword'];
+            $confirmPassword = $post['confirmpassword'];
 
-            if ($emailExists) {
-                header('Location:' . URLROOT . 'user/userSignin/{toast:false;toasttitle:Failed;toastmessage:Your+create+of+the+customer+has+failed}/');
+            switch ($post) {
+                case empty($post['customerfirstname']):
+                    $ajaxResponse['customerfirstname'] = [
+                        'state' => 500,
+                        'message' => 'First name cannot be empty.'
+                    ];
+                case empty($post['customerlastname']):
+                    $ajaxResponse['customerlastname'] = [
+                        'state' => 500,
+                        'message' => 'Last name cannot be empty.'
+                    ];
+                case empty($post['customeremail']):
+                    $ajaxResponse['customeremail'] = [
+                        'state' => 500,
+                        'message' => 'Email cannot be empty.'
+                    ];
+                case empty($post['customerpassword']):
+                    $ajaxResponse['customerpassword'] = [
+                        'state' => 500,
+                        'message' => 'Password cannot be empty.'
+                    ];
+                case empty($post['confirmpassword']):
+                    unset($ajaxResponse['success']);
+                    $ajaxResponse['confirmpassword'] = [
+                        'state' => 500,
+                        'message' => 'Confirm password cannot be empty.'
+                    ];
+                    break;
+                default:
+                    # code...
+                    break;
             }
 
-            if ($post['customerpassword'] !== $post['confirmpassword']) {
-                echo "Passwords do not match";
-                exit;
-            } else {
+            // Check if the email is already registered
+            $emailExists = $this->userModel->checkEmailExists($customerEmail);
+
+            if ($emailExists) {
+                unset($ajaxResponse['success']);
+                $ajaxResponse['customeremail'] = [
+                    'state' => 500,
+                    'message' => 'Email is already used'
+                ];
+            }
+
+            if ($customerPassword !== $confirmPassword) {
+                unset($ajaxResponse['success']);
+                $ajaxResponse['confirmpassword'] = [
+                    'state' => 500,
+                    'message' => 'The confirm password doesnt match the password'
+                ];
+            }
+
+            if (isset($ajaxResponse['success'])) {
                 // Assuming createCustomer returns the user data upon successful registration
                 $user = $this->userModel->createCustomer($post);
 
-                if ($user) {
-                    // Call the login method to perform automatic login
-                    $email = $post['customeremail'];
-                    $password = $post['customerpassword'];
+                // Call the login method to perform automatic login
+                $user = $this->userModel->login($customerEmail, $customerPassword);
 
-                    $user = $this->userModel->login($email, $password);
-
-                    if ($user) {
-                        // Automatic login after successful registration
-                        session_start();
-                        $_SESSION['user'] = $user;
-                        session_write_close();
-
-                        header('Location:' . URLROOT . 'user/edit/');
-                        exit();
-                    } else {
-                        echo "Login after registration failed"; // Handle login failure after registration
-                    }
-                } else {
-                    echo "Registration failed"; // Handle registration failure
-                }
+                // Automatic login after successful registration
+                session_start();
+                $_SESSION['user'] = $user;
+                session_write_close();
             }
+
+            // Encode the array as JSON
+            echo json_encode($ajaxResponse);
+            exit;
         } else {
             $data = [
                 'title' => 'User Sign in and Log in'

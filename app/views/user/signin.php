@@ -20,7 +20,7 @@
     </div>
   </div>
 
-  <form class="bg radius-md shadow-sm padding-lg max-width-xxs form-signin" action="<?= URLROOT ?>user/userSignin/" method="post">
+  <form class="bg radius-md shadow-sm padding-lg max-width-xxs form-signin" onsubmit="signUp(event)">
     <div class="text-component text-center margin-bottom-md">
       <h1>Get started</h1>
       <p>Already have an account? <a href="<?= URLROOT ?>user/login/">Login</a></p>

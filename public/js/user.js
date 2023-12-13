@@ -1,55 +1,5 @@
-document.addEventListener("DOMContentLoaded", function () {
-  // Select the form with the class "form-signin"
-  const form = document.querySelector(".form-signin");
-
-  // Create a div element for displaying the error message
-  const errorDiv = document.createElement("div");
-  errorDiv.className =
-    "bg-accent bg-opacity-20% padding-xs radius-md text-sm color-contrast-higher margin-top-xxs";
-  errorDiv.innerHTML =
-    "<p><strong>Error:</strong> This field cannot be empty</p>";
-
-  // Initialize a variable to track the active input and its timeout
-  let activeInput = null;
-
-  // Listen for input events on the form
-  form.addEventListener("input", function (event) {
-    // Get the current input element that triggered the event
-    const inputElement = event.target;
-
-    // If the active input is different, clear its timeout
-    if (activeInput !== inputElement) {
-      clearTimeout(activeInput?.timeout);
-      activeInput = inputElement;
-    }
-
-    // Clear the timeout for the active input
-    clearTimeout(activeInput.timeout);
-
-    // Set a new timeout to check for empty input after 2 seconds
-    activeInput.timeout = setTimeout(function () {
-      // Check if the input is empty
-      if (inputElement.value.trim() === "") {
-        // If empty, set aria-invalid attribute and display error message
-        inputElement.setAttribute("aria-invalid", "true");
-        if (!inputElement.parentNode.contains(errorDiv)) {
-          inputElement.parentNode.appendChild(errorDiv.cloneNode(true));
-        }
-      } else {
-        // If not empty, remove aria-invalid attribute and hide error message
-        inputElement.removeAttribute("aria-invalid");
-        const existingError =
-          inputElement.parentNode.querySelector(".bg-accent");
-        if (existingError) {
-          inputElement.parentNode.removeChild(existingError);
-        }
-      }
-    }, 2000);
-  });
-});
-
 function openToastSuccess(title, message) {
-  var toast = document.getElementById('toast-1');
+  var toast = document.getElementById("toast-1");
   var toastTitle = document.querySelector(".toast__title");
   var toastP = document.querySelector(".toast__p");
 
@@ -120,5 +70,58 @@ if (match) {
     openToastSuccess(toastParams.toasttitle, toastParams.toastmessage);
   } else {
     console.log("Invalid or missing parameters for toast.");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Wait for the DOM to be fully loaded before executing the code
+});
+
+async function signUp(event) {
+  event.preventDefault();
+  // Get the form element
+  const form = document.querySelector("form");
+
+  // Remove existing error messages
+  const existingErrors = form.querySelectorAll(".bg-accent");
+  existingErrors.forEach((error) => error.remove());
+
+  // Create an object to store the form data
+  const formData = new FormData(form);
+
+  // Make a POST request using the fetch API
+  const ajaxFetch = await fetch(
+    "http://localhost/pizzapalace/user/userSignin/",
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const response = await ajaxFetch.json();
+
+  if (response.success) {
+    console.log(response.success.message);
+    window.location.href = "http://localhost/pizzapalace/user/edit/";
+  } else {
+    // Loop through the response and append error messages to the corresponding input fields
+    Object.keys(response).forEach((fieldName) => {
+      const inputField = form.querySelector(`[name="${fieldName}"]`);
+      const errorMessage = response[fieldName].message;
+
+      if (inputField) {
+        // Create and append error element
+        const errorElement = document.createElement("div");
+        errorElement.className =
+          "bg-accent bg-opacity-20% padding-xs radius-md text-sm color-contrast-higher margin-top-xxs";
+        errorElement.textContent = errorMessage;
+
+        // Append error element after the input field
+        inputField.parentNode.insertBefore(
+          errorElement,
+          inputField.nextSibling
+        );
+      }
+    });
   }
 }
