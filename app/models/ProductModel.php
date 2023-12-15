@@ -275,7 +275,8 @@ class ProductModel
         $query = "SELECT DISTINCT p.productId,
                               p.productName,
                               p.productPrice,
-                              p.productType 
+                              p.productType,
+                              p.productDescription 
                               FROM products as p
                               WHERE p.productIsActive = 1";
 
@@ -289,7 +290,7 @@ class ProductModel
                 return ":ingredient{$index}";
             }, array_keys($filters['ingredients'])));
 
-            $query .= " AND p.productId IN (SELECT DISTINCT phi.productId FROM productshasingredients as phi WHERE phi.ingredientId IN ({$ingredientPlaceholders}))";
+            $query .= " AND p.productId IN (SELECT DISTINCT phi.productId FROM producthasingredients as phi WHERE phi.ingredientId IN ({$ingredientPlaceholders}))";
         }
 
         if (isset($filters['rating'])) {
@@ -325,7 +326,7 @@ class ProductModel
             } elseif ($key === 'search') {
                 // Handle search
                 $this->db->bind(':search', '%' . $value . '%');
-            } elseif ($key !== 'page') {
+            } elseif ($key !== 'storeid' && $key !== 'page') {
                 $this->db->bind(":$key", $value);
             }
         }

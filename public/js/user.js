@@ -125,3 +125,153 @@ async function signUp(event) {
     });
   }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Wait for the DOM to be fully loaded before executing the code
+});
+
+async function login(event) {
+  event.preventDefault();
+  // Get the form element
+  const form = document.querySelector("form");
+
+  // Remove existing error messages
+  const existingErrors = form.querySelectorAll(".bg-accent");
+  existingErrors.forEach((error) => error.remove());
+
+  // Create an object to store the form data
+  const formData = new FormData(form);
+
+  // Make a POST request using the fetch API
+  const ajaxFetch = await fetch("http://localhost/pizzapalace/user/login/", {
+    method: "POST",
+    body: formData,
+  });
+
+  const response = await ajaxFetch.json();
+
+  if (response.success) {
+    console.log(response.success.message);
+    window.location.href = "http://localhost/pizzapalace/pizza/overview/";
+  } else {
+    // Loop through the response and append error messages to the corresponding input fields
+    Object.keys(response).forEach((fieldName) => {
+      const inputField = form.querySelector(`[name="${fieldName}"]`);
+      const errorMessage = response[fieldName].message;
+
+      console.log(inputField);
+
+      if (inputField) {
+        // Create and append error element
+        const errorElement = document.createElement("div");
+        errorElement.className =
+          "bg-accent bg-opacity-20% padding-xs radius-md text-sm color-contrast-higher margin-top-xxs";
+        errorElement.textContent = errorMessage;
+
+        // Append error element after the input field
+        inputField.parentNode.insertBefore(
+          errorElement,
+          inputField.nextSibling
+        );
+      }
+    });
+  }
+}
+
+async function editPassword(event) {
+  event.preventDefault();
+  // Get the form element
+  const form = document.querySelector("form");
+
+  // Remove existing error messages
+  const existingErrors = form.querySelectorAll(".bg-accent");
+  existingErrors.forEach((error) => error.remove());
+
+  // Create an object to store the form data
+  const formData = new FormData(form);
+
+  // Make a POST request using the fetch API
+  const ajaxFetch = await fetch(
+    "http://localhost/pizzapalace/user/editPassword/",
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const response = await ajaxFetch.json();
+
+  if (response.success) {
+    console.log(response.success.message);
+    window.location.href = "http://localhost/pizzapalace/user/editPassword/";
+  } else {
+    // Loop through the response and append error messages to the corresponding input fields
+    Object.keys(response).forEach((fieldName) => {
+      const inputField = form.querySelector(`[name="${fieldName}"]`);
+      const errorMessage = response[fieldName].message;
+
+      if (inputField) {
+        // Create and append error element
+        const errorElement = document.createElement("div");
+        errorElement.className =
+          "bg-accent bg-opacity-20% padding-xs radius-md text-sm color-contrast-higher margin-top-xxs";
+        errorElement.textContent = errorMessage;
+
+        // Append error element after the input field
+        inputField.parentNode.insertBefore(
+          errorElement,
+          inputField.nextSibling
+        );
+      }
+    });
+  }
+}
+
+async function editProfile(event) {
+  event.preventDefault();
+  // Get the form element
+  const form = document.querySelector("form");
+
+  // Remove existing error messages
+  const existingErrors = form.querySelectorAll(".bg-accent");
+  existingErrors.forEach((error) => error.remove());
+
+  // Create an object to store the form data
+  const formData = new FormData(form);
+
+  // Make a POST request using the fetch API
+  const ajaxFetch = await fetch(
+    "http://localhost/pizzapalace/user/edit/",
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const response = await ajaxFetch.json();
+
+  if (response.success) {
+    console.log(response.success.message);
+    window.location.href = "http://localhost/pizzapalace/user/edit/";
+  } else {
+    // Loop through the response and append error messages to the corresponding input fields
+    Object.keys(response).forEach((fieldName) => {
+      const inputField = form.querySelector(`[name="${fieldName}"]`);
+      const errorMessage = response[fieldName].message;
+
+      if (inputField) {
+        // Create and append error element
+        const errorElement = document.createElement("div");
+        errorElement.className =
+          "bg-accent bg-opacity-20% padding-xs radius-md text-sm color-contrast-higher margin-top-xxs";
+        errorElement.textContent = errorMessage;
+
+        // Append error element after the input field
+        inputField.parentNode.insertBefore(
+          errorElement,
+          inputField.nextSibling
+        );
+      }
+    });
+  }
+}

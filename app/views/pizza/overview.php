@@ -1,78 +1,5 @@
 <?php require APPROOT . '/views/includes/head.php'; ?>
 
-<!-- Nav Bar -->
-<header class="header position-relative js-header" id="navbar">
-    <div class="header__container container max-width-lg">
-        <div class="header__logo">
-            <a href="<?= URLROOT ?>pizza/overview/">
-                <img class="logo-image" src="<?= URLROOT ?>public/img/logo.png" alt="Your Logo">
-            </a>
-        </div>
-
-        <button class="btn btn--subtle header__trigger js-header__trigger" aria-label="Toggle menu" aria-expanded="false" aria-controls="header-nav">
-            <i class="header__trigger-icon" aria-hidden="true"></i>
-            <span>Menu</span>
-        </button>
-
-        <nav style="display: flex;" class="header__nav js-header__nav" id="header-nav" role="navigation" aria-label="Main">
-            <div class="grid gap-sm">
-                <div class="header__nav-inner col-6@sm">
-                    <div class="header__label">Main menu</div>
-                    <ul class="header__list">
-                        <button class="btn btn--primary header__nav-btn" aria-controls="drawer-cart-id">Show Cart</button>
-                    </ul>
-                </div>
-
-                <!-- User is logged in -->
-                <button class="reset user-menu-control col-6@sm" aria-controls="user-menu" aria-label="Toggle user menu">
-                    <figure class="user-menu-control__img-wrapper radius-50%">
-                        <img class="user-menu-control__img" src="<?= URLROOT ?>public/img/businesscostumemalemanofficeusericon-1320196264882354682.png" alt="User picture">
-                    </figure>
-
-                    <svg class="icon icon--xxs margin-left-xxs" aria-hidden="true" viewBox="0 0 12 12">
-                        <polyline points="1 4 6 9 11 4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                    </svg>
-                </button>
-                <menu id="user-menu" class="menu js-menu">
-                    <div class="padding-md padding-sm@md margin-top-auto flex-shrink-0 border-top border-alpha">
-                        <div class="flex items-center justify-between@md">
-                            <p class="text-sm@md">Dark Mode</p>
-
-                            <div class="switch dark-mode-switch margin-left-xxs">
-                                <input class="switch__input" type="checkbox" id="switch-light-dark">
-                                <label aria-hidden="true" class="switch__label" for="switch-light-dark">On</label>
-                                <div aria-hidden="true" class="switch__marker"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <li class="menu__separator" role="separator"></li>
-                    <?php if (isset($_SESSION['user'])) : ?>
-                        <li role="menuitem">
-                            <a class="menu__content js-menu__content" href="<?= URLROOT ?>user/edit/">
-                                <svg class="icon menu__icon" aria-hidden="true" viewBox="0 0 16 16">
-                                    <circle cx="8" cy="3.5" r="3.5" />
-                                    <path d="M14.747,14.15a6.995,6.995,0,0,0-13.494,0A1.428,1.428,0,0,0,1.5,15.4a1.531,1.531,0,0,0,1.209.6H13.288a1.531,1.531,0,0,0,1.209-.6A1.428,1.428,0,0,0,14.747,14.15Z" />
-                                </svg>
-                                <span>Profile</span>
-                            </a>
-                        </li>
-                        <!-- Move Sign In button inside the user menu -->
-                        <li role="menuitem">
-                            <a class="menu__content js-menu__content" href="<?= URLROOT ?>user/logout">Logout</a>
-                        </li>
-                    <?php else : ?>
-                        <!-- User is not logged in -->
-                        <li role="menuitem">
-                            <a class="menu__content js-menu__content" href="<?= URLROOT ?>user/login">Sign in</a>
-                        </li>
-                    <?php endif; ?>
-                    </li>
-                </menu>
-            </div>
-        </nav>
-    </div>
-</header>
-
 <!-- Toast Notifications -->
 <div class="toast toast--hidden toast--top-left js-toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-1">
     <div class="flex items-start justify-between">
@@ -106,7 +33,7 @@
     <p class="sr-only">Slideshow items</p>
     <div class="slideshow-pm__content">
         <ul class="slideshow-pm__list js-slideshow-pm__list">
-            <?php foreach ($data['promotions'] as $promotion) : ?>
+            <?php foreach ($data['promos'] as $promotion) : ?>
                 <li class="slideshow-pm__item js-slideshow-pm__item">
                     <figure class="aspect-ratio-16:9 width-100%">
                         <img src="<?= $promotion->imagePath ?>" alt="Image description">
@@ -141,7 +68,58 @@
     </div>
 </div>
 
+<div id="modal-name-2" class="modal modal--animate-translate-up flex flex-center bg-black bg-opacity-90% padding-md js-modal">
+    <div class="modal__content width-100% max-width-xs max-height-100% overflow-auto bg radius-md inner-glow shadow-md" role="alertdialog" aria-labelledby="modal-title-2" aria-describedby="modal-description-2">
+        <header class="bg-contrast-lower bg-opacity-50% padding-y-sm padding-x-md flex items-center justify-between">
+            <h1 id="modal-title-2" class="text-truncate text-md">Modal title</h1>
 
+            <button class="reset modal__close-btn modal__close-btn--inner js-modal__close js-tab-focus">
+                <svg class="icon icon--xs" viewBox="0 0 16 16">
+                    <title>Close modal window</title>
+                    <g stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10">
+                        <line x1="13.5" y1="2.5" x2="2.5" y2="13.5"></line>
+                        <line x1="2.5" y1="2.5" x2="13.5" y2="13.5"></line>
+                    </g>
+                </svg>
+            </button>
+        </header>
+
+        <div class="padding-y-sm padding-x-md">
+
+            <div class="product-image-section margin-top-md text-center">
+                <img id="product-image" src="" alt="Product Image">
+            </div>
+
+            <div class="text-component margin-top-md text-center">
+                <p id="product-description">Product description goes here...</p>
+            </div>
+        </div>
+
+        <footer class="padding-md bg-contrast-lower">
+            <div class="flex justify-end gap-md">
+                <em style="margin-top: 5px;">
+                    <p class="price text-sm text-primary js-product-total-price" style="font-size: medium; font-weight:bold;" id="1"></p>
+                </em>
+                <div class="number-input number-input--v2 js-number-input js-filter__custom-control" aria-controls="adv-filter-gallery" data-filter="indexValue">
+                    <input class="form-control text-sm@md js-number-input__value productAmount" type="number" name="productAmount" style="width: 80px;" id="index-value" min="1" max="100" step="1" value="1">
+
+                    <button class="reset number-input__btn number-input__btn--plus js-number-input__btn plusButton" aria-label="Increase Number">
+                        <svg class="icon" viewBox="0 0 12 12" aria-hidden="true">
+                            <path d="M11,5H7V1A1,1,0,0,0,5,1V5H1A1,1,0,0,0,1,7H5v4a1,1,0,0,0,2,0V7h4a1,1,0,0,0,0-2Z" />
+                        </svg>
+                    </button>
+
+                    <button class="reset number-input__btn number-input__btn--minus js-number-input__btn minButton" aria-label="Decrease Number">
+                        <svg class="icon" viewBox="0 0 12 12" aria-hidden="true">
+                            <path d="M11,7H1A1,1,0,0,1,1,5H11a1,1,0,0,1,0,2Z" />
+                        </svg>
+                    </button>
+                </div>
+                <button class="btn btn--primary text-sm width-40% addToCartModal">Add To Cart</button>
+            </div>
+        </footer>
+    </div>
+</div>
 
 
 <!-- filter on the left side -->
@@ -329,7 +307,7 @@
                                 <button class="reset accordion__header padding-y-sm padding-x-md padding-x-xs@md js-tab-focus" type="button">
                                     <div>
                                         <div class="text-sm@md">Store</div>
-                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection">All</span></div>
+                                        <div class="text-sm color-contrast-low"><i class="sr-only">Active filters: </i><span class="js-adv-filter__selection storeName">All</span></div>
                                     </div>
 
                                     <svg class="icon accordion__icon-arrow-v2 no-js:is-hidden" viewBox="0 0 20 20">
@@ -342,21 +320,7 @@
 
                                 <div class="accordion__panel js-accordion__panel">
                                     <div class="padding-top-xxxs padding-x-md padding-bottom-md padding-x-xs@md flex">
-                                        <label class="sr-only" for="select-filter-option">Select Store:</label>
-
-                                        <div class="select width-100% js-select" data-trigger-class="btn btn--subtle flex-grow">
-                                            <!-- data-trigger-class -> custom select component 👆 -->
-                                            <select name="select-filter-option" id="select-filter-option" aria-controls="adv-filter-gallery" data-filter="true">
-                                                <option value="" selected>All</option>
-                                                <?php foreach ($data['stores'] as $store) : ?>
-                                                    <option value="<?= $store->storeId ?>"><?= $store->storeName ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-
-                                            <svg class="icon icon--xxs margin-left-xxs" aria-hidden="true" viewBox="0 0 12 12">
-                                                <path d="M10.947,3.276A.5.5,0,0,0,10.5,3h-9a.5.5,0,0,0-.4.8l4.5,6a.5.5,0,0,0,.8,0l4.5-6A.5.5,0,0,0,10.947,3.276Z" />
-                                            </svg>
-                                        </div>
+                                        <a href="<?= URLROOT ?>stores/overview/" class="reset text-sm color-contrast-high text-underline cursor-pointer margin-bottom-sm text-sm@md js-adv-filter__reset js-tab-focus" type="reset">Choose a different Store</a>
                                     </div>
                                 </div>
                             </li>
@@ -373,7 +337,7 @@
                 <div>
                     <ul class="grid gap-sm js-adv-filter__gallery" id="adv-filter-gallery">
                         <?php foreach ($data['products'] as $product) : ?>
-                            <li class="col-4@xs flex flex-center padding-sm">
+                            <li class="col-4@xs flex flex-center padding-sm" id="product-card-<?= $product->productId ?>">
                                 <div class="card">
                                     <figure class="card__img-wrapper">
                                         <?php if ($product->imagePath) : ?>
@@ -388,6 +352,9 @@
                                         <div class="margin-top-xs">
                                             <span class="prod-card__price">€<?= $product->productPrice ?></span>
                                         </div>
+                                        <div class="margin-top-xs">
+                                            <a aria-controls="modal-name-2" id="modal-name-<?= $product->productId ?>" class="reset text-sm color-contrast-high text-underline cursor-pointer margin-bottom-sm text-sm@md js-adv-filter__reset js-tab-focus" type="reset">Read more...</a>
+                                        </div>
                                         <?php if (isset($product->productRating)) : ?>
                                             <div class="margin-top-xs">
                                                 <span class="prod-card__price"><?= $product->productRating ?> ☆</span>
@@ -397,6 +364,7 @@
                                         <input type="hidden" class="productId" value="<?= $product->productId ?>">
                                         <input type="hidden" class="productName" value="<?= $product->productName ?>">
                                         <input type="hidden" class="productPrice" value="<?= $product->productPrice ?>">
+                                        <input type="hidden" class="productDescription" value="<?= $product->productDescription ?>">
                                         <input type="hidden" class="imagePath" value="<?= $product->imagePath ?>">
                                     </div>
                                 </div>
@@ -598,7 +566,6 @@
         </div>
     </div>
 </footer>
-
 <script src="<?= URLROOT; ?>public/js/app.js"></script>
 
 

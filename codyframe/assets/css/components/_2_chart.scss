@@ -1,4 +1,5 @@
 @use '../base' as *;
+
 /* -------------------------------- 
 
 File#: _2_chart
@@ -56,7 +57,7 @@ Usage: codyhouse.co/license
 .chart__tooltip {
   position: absolute;
   font-size: var(--text-xs);
-  background-color: var(--color-accent);
+  background-color: var(--color-contrast-lower);
   padding: var(--space-sm);
   pointer-events: none;
   white-space: nowrap;
@@ -105,7 +106,7 @@ Usage: codyhouse.co/license
 .chart__guides {
   fill: transparent;
   stroke-width: var(--chart-guides-stroke-width);
-  stroke: var(--color-border-alpha);
+  stroke: var(--color-contrast-lower);
 }
 
 // --------------------------------

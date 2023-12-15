@@ -1,8 +1,14 @@
 // File#: _2_chart
 // Usage: codyhouse.co/license
+Math.easeOutQuart = function (t, b, c, d) {
+  t /= d;
+	t--;
+	return -c * (t*t*t*t - 1) + b;
+};
+
 (function() {
   var Chart = function(opts) {
-    this.options = Util.extend(Chart.defaults , opts);
+    this.options = extendProps(Chart.defaults , opts);
     this.element = this.options.element.getElementsByClassName('js-chart__area')[0];
     this.svgPadding = this.options.padding;
     this.topDelta = this.svgPadding;
@@ -121,7 +127,7 @@
     if( chart.options.xAxis && chart.options.xAxis.legend) {
       var textLegend = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       textLegend.textContent = chart.options.xAxis.legend;
-      Util.setAttributes(textLegend, {class: 'chart__axis-legend chart__axis-legend--x js-chart__axis-legend--x'});
+      setAttributes(textLegend, {class: 'chart__axis-legend chart__axis-legend--x js-chart__axis-legend--x'});
       chart.svg.appendChild(textLegend);
 
       var xLegend = chart.element.getElementsByClassName('js-chart__axis-legend--x')[0];
@@ -131,7 +137,7 @@
           xPosition = chart.width/2 - size.width/2,
           yPosition = chart.height - chart.bottomDelta;
 
-        Util.setAttributes(xLegend, {x: xPosition, y: yPosition});
+        setAttributes(xLegend, {x: xPosition, y: yPosition});
         chart.bottomDelta = chart.bottomDelta + size.height +chart.svgPadding;
       }
     }
@@ -150,19 +156,19 @@
     } 
 
     var gEl = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    Util.setAttributes(gEl, {class: 'chart__axis-labels chart__axis-labels--x js-chart__axis-labels--x'});
+    setAttributes(gEl, {class: 'chart__axis-labels chart__axis-labels--x js-chart__axis-labels--x'});
 
     for(var i = 0; i < xLabels.length; i++) {
       var textEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       var labelClasses = (chart.options.xAxis && chart.options.xAxis.labels) ? 'chart__axis-label chart__axis-label--x js-chart__axis-label' : 'is-hidden js-chart__axis-label';
-      Util.setAttributes(textEl, {class: labelClasses, 'alignment-baseline': 'middle'});
+      setAttributes(textEl, {class: labelClasses, 'alignment-baseline': 'middle'});
       textEl.textContent = xLabels[i];
       gEl.appendChild(textEl);
     }
     
     if(chart.options.xAxis && chart.options.xAxis.line) {
       var lineEl = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      Util.setAttributes(lineEl, {class: 'chart__axis chart__axis--x js-chart__axis--x', 'stroke-linecap': 'square'});
+      setAttributes(lineEl, {class: 'chart__axis chart__axis--x js-chart__axis--x', 'stroke-linecap': 'square'});
       gEl.appendChild(lineEl);
     }
 
@@ -172,7 +178,7 @@
     for(var i = 0; i < ticksLength; i++) {
       var tickEl = document.createElementNS('http://www.w3.org/2000/svg', 'line');
       var classTicks = (chart.options.xAxis && chart.options.xAxis.ticks) ? 'chart__tick chart__tick-x js-chart__tick-x' : 'js-chart__tick-x';
-      Util.setAttributes(tickEl, {class: classTicks, 'stroke-linecap': 'square'});
+      setAttributes(tickEl, {class: classTicks, 'stroke-linecap': 'square'});
       gEl.appendChild(tickEl);
     }
 
@@ -193,7 +199,7 @@
           xPosition = chart.leftDelta + height/2,
           yPosition = chart.topDelta;
     
-        Util.setAttributes(yLegend, {x: xPosition, y: yPosition});
+        setAttributes(yLegend, {x: xPosition, y: yPosition});
         chart.leftDelta = chart.leftDelta + height + chart.svgPadding;
       }
     }
@@ -212,28 +218,28 @@
     } 
 
     var gEl = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    Util.setAttributes(gEl, {class: 'chart__axis-labels chart__axis-labels--y js-chart__axis-labels--y'});
+    setAttributes(gEl, {class: 'chart__axis-labels chart__axis-labels--y js-chart__axis-labels--y'});
 
     for(var i = yLabels.length - 1; i >= 0; i--) {
       var textEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       var labelClasses = (chart.options.yAxis && chart.options.yAxis.labels) ? 'chart__axis-label chart__axis-label--y js-chart__axis-label' : 'is-hidden js-chart__axis-label';
-      Util.setAttributes(textEl, {class: labelClasses, 'alignment-baseline': 'middle'});
+      setAttributes(textEl, {class: labelClasses, 'alignment-baseline': 'middle'});
       textEl.textContent = yLabels[i];
       gEl.appendChild(textEl);
     }
 
     if(chart.options.yAxis && chart.options.yAxis.line) {
       var lineEl = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      Util.setAttributes(lineEl, {class: 'chart__axis chart__axis--y js-chart__axis--y', 'stroke-linecap': 'square'});
+      setAttributes(lineEl, {class: 'chart__axis chart__axis--y js-chart__axis--y', 'stroke-linecap': 'square'});
       gEl.appendChild(lineEl);
     }
 
     var hideGuides = chart.options.xAxis && chart.options.xAxis.hasOwnProperty('guides') && !chart.options.xAxis.guides;
     for(var i = 1; i < yLabels.length; i++ ) {
       var rectEl = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      Util.setAttributes(rectEl, {class: 'chart__guides js-chart__guides'});
+      setAttributes(rectEl, {class: 'chart__guides js-chart__guides'});
       if(hideGuides) {
-        Util.setAttributes(rectEl, {class: 'chart__guides js-chart__guides opacity-0'});
+        setAttributes(rectEl, {class: 'chart__guides js-chart__guides opacity-0'});
       }
       gEl.appendChild(rectEl);
     }
@@ -276,15 +282,15 @@
       var labelWidth = 0;
       if(labelsVisible) labelWidth = labels[i].getBBox().width;
       // chart.leftDelta has already been updated in updateChartWidth() function
-      Util.setAttributes(labels[i], {x: chart.leftDelta - labelWidth - 2*chart.svgPadding, y: chart.topDelta + yDelta*i });
+      setAttributes(labels[i], {x: chart.leftDelta - labelWidth - 2*chart.svgPadding, y: chart.topDelta + yDelta*i });
       // place grid rectangles
-      if(gridRect[i]) Util.setAttributes(gridRect[i], {x: chart.leftDelta, y: chart.topDelta + yDelta*i, height: yDelta, width: chart.xAxisWidth, 'stroke-dasharray': dasharray});
+      if(gridRect[i]) setAttributes(gridRect[i], {x: chart.leftDelta, y: chart.topDelta + yDelta*i, height: yDelta, width: chart.xAxisWidth, 'stroke-dasharray': dasharray});
     }
 
     // place the y axis
     var yAxis = chart.element.getElementsByClassName('js-chart__axis--y');
     if(yAxis.length > 0) {
-      Util.setAttributes(yAxis[0], {x1: chart.leftDelta, x2: chart.leftDelta, y1: chart.topDelta, y2: chart.topDelta + chart.yAxisHeight})
+      setAttributes(yAxis[0], {x1: chart.leftDelta, x2: chart.leftDelta, y1: chart.topDelta, y2: chart.topDelta + chart.yAxisHeight})
     }
     // center y axis label
     var yLegend = chart.element.getElementsByClassName('js-chart__axis-legend--y');
@@ -294,7 +300,7 @@
         yPosition = position.y + 0.5*(chart.yAxisHeight + position.width),
         xPosition = position.x + height/4;
       
-      Util.setAttributes(yLegend[0], {y: yPosition, x: xPosition, transform: 'rotate(-90 '+(position.x + height)+' '+(yPosition + height/2)+')'});
+      setAttributes(yLegend[0], {y: yPosition, x: xPosition, transform: 'rotate(-90 '+(position.x + height)+' '+(yPosition + height/2)+')'});
     }
   };
 
@@ -328,14 +334,14 @@
       var width = 0;
       if(labelsVisible) width = labels[i].getBBox().width;
       // label
-      Util.setAttributes(labels[i], {y: chart.height - chart.bottomDelta - height/2, x: chart.leftDelta + xDelta*i - width/2});
+      setAttributes(labels[i], {y: chart.height - chart.bottomDelta - height/2, x: chart.leftDelta + xDelta*i - width/2});
       // tick
-      Util.setAttributes(ticks[i], {y1: chart.height - chart.bottomDelta - maxHeight - chart.svgPadding, y2: chart.height - chart.bottomDelta - maxHeight - chart.svgPadding + 5, x1: chart.leftDelta + xDelta*i, x2: chart.leftDelta + xDelta*i});
+      setAttributes(ticks[i], {y1: chart.height - chart.bottomDelta - maxHeight - chart.svgPadding, y2: chart.height - chart.bottomDelta - maxHeight - chart.svgPadding + 5, x1: chart.leftDelta + xDelta*i, x2: chart.leftDelta + xDelta*i});
       totWidth = totWidth + width + 4;
     }
     // for columns chart -> there's an additional tick element
     if(chart.options.type == 'column' && ticks[labels.length]) {
-      Util.setAttributes(ticks[labels.length], {y1: chart.height - chart.bottomDelta - maxHeight - chart.svgPadding, y2: chart.height - chart.bottomDelta - maxHeight - chart.svgPadding + 5, x1: chart.leftDelta + xDelta*labels.length, x2: chart.leftDelta + xDelta*labels.length});
+      setAttributes(ticks[labels.length], {y1: chart.height - chart.bottomDelta - maxHeight - chart.svgPadding, y2: chart.height - chart.bottomDelta - maxHeight - chart.svgPadding + 5, x1: chart.leftDelta + xDelta*labels.length, x2: chart.leftDelta + xDelta*labels.length});
     }
     //check if we need to rotate chart label -> not enough space
     if(totWidth >= chart.xAxisWidth) {
@@ -351,7 +357,7 @@
     // place the x axis
     var xAxis = chart.element.getElementsByClassName('js-chart__axis--x');
     if(xAxis.length > 0) {
-      Util.setAttributes(xAxis[0], {x1: chart.leftDelta, x2: chart.width - chart.rightDelta, y1: chart.height - chart.bottomDelta, y2: chart.height - chart.bottomDelta})
+      setAttributes(xAxis[0], {x1: chart.leftDelta, x2: chart.width - chart.rightDelta, y1: chart.height - chart.bottomDelta, y2: chart.height - chart.bottomDelta})
     }
 
     // center x-axis label
@@ -368,7 +374,7 @@
         xCenter = parseFloat(labels[i].getAttribute('x')) + dimensions.width/2,
         yCenter = parseFloat(labels[i].getAttribute('y'))  - delta;
 
-      Util.setAttributes(labels[i], {y: parseFloat(labels[i].getAttribute('y')) - delta, transform: 'rotate(-45 '+xCenter+' '+yCenter+')'});
+      setAttributes(labels[i], {y: parseFloat(labels[i].getAttribute('y')) - delta, transform: 'rotate(-45 '+xCenter+' '+yCenter+')'});
 
       ticks[i].setAttribute('transform', 'translate(0 -'+delta+')');
     }
@@ -402,7 +408,7 @@
 
   function getChartData(chart, data) {
     var multiSet = data[0].length > 1;
-    var points = multiSet ? data : addXData(data); // addXData is used for one-dimension dataset; e.g. [2, 4, 6] rather than [[2, 4], [4, 7]]
+    var points = multiSet ? data : addXData(chart, data); // addXData is used for one-dimension dataset; e.g. [2, 4, 6] rather than [[2, 4], [4, 7]]
     
     // xOffsetChart used for column chart type onlymodified
     var xOffsetChart = chart.xAxisWidth/(points.length-1) - chart.xAxisWidth/points.length;
@@ -424,12 +430,12 @@
     var gEl = document.createElementNS('http://www.w3.org/2000/svg', 'g'),
       pathL = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       
-    Util.setAttributes(pathL, {d: pathCode, class: 'chart__data-line chart__data-line--'+(index+1)+' js-chart__data-line--'+(index+1)});
+    setAttributes(pathL, {d: pathCode, class: 'chart__data-line chart__data-line--'+(index+1)+' js-chart__data-line--'+(index+1)});
 
     if(chart.options.type == 'area') {
       var areaCode = chart.options.smooth ? getSmoothLine(areaPoints, true) : getStraightLine(areaPoints);
       var pathA = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      Util.setAttributes(pathA, {d: areaCode, class: 'chart__data-fill chart__data-fill--'+(index+1)+' js-chart__data-fill--'+(index+1)});
+      setAttributes(pathA, {d: areaCode, class: 'chart__data-fill chart__data-fill--'+(index+1)+' js-chart__data-fill--'+(index+1)});
       gEl.appendChild(pathA);
     }
    
@@ -538,16 +544,22 @@
     }
     for(var i = 0; i < points.length; i++) {
       var marker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      Util.setAttributes(marker, {class: 'chart__marker js-chart__marker chart__marker--'+(index+1), cx: points[i][0] + xOffset, cy: points[i][1], r: 2, 'data-set': index, 'data-index': i});
+      setAttributes(marker, {class: 'chart__marker js-chart__marker chart__marker--'+(index+1), cx: points[i][0] + xOffset, cy: points[i][1], r: 2, 'data-set': index, 'data-index': i});
       gEl.appendChild(marker);
     }
     return gEl;
   };
 
-  function addXData(data) {
+  function addXData(chart, data) {
     var multiData = [];
     for(var i = 0; i < data.length; i++) {
-      multiData.push([i, data[i]]);
+      if(chart.options.xAxis && chart.options.xAxis.range && chart.options.xAxis.step) {
+        var xValue = chart.options.xAxis.range[0] + i;
+        if(xValue > chart.options.xAxis.range[1]) xValue = chart.options.xAxis.range[1];
+        multiData.push([xValue, data[i]]);
+      } else {
+        multiData.push([i, data[i]]);
+      }
     }
     return multiData;
   };
@@ -621,7 +633,9 @@
     if(chart.options.xAxis && chart.options.xAxis.range && chart.options.xAxis.step) {
       intervals = Math.ceil((chart.options.xAxis.range[1] - chart.options.xAxis.range[0])/chart.options.xAxis.step);
       for(var i = 0; i <= intervals; i++) {
-        labels.push(chart.options.xAxis.range[0] + chart.options.xAxis.step*i);
+        var xRange = chart.options.xAxis.range[0] + chart.options.xAxis.step*i;
+        if(xRange > chart.options.xAxis.range[1]) xRange = chart.options.xAxis.range[1];
+        labels.push(xRange);
       }
       chart.xAxisInterval = [chart.options.xAxis.range[0], chart.options.xAxis.range[1]];
     } else if(!chart.options.datasets[0].data[0].length || chart.options.datasets[0].data[0].length < 2) {
@@ -810,7 +824,7 @@
     // create tooltip line
     if(chart.options.yIndicator) {
       var tooltipLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      Util.setAttributes(tooltipLine, {x1: 0, y1: chart.topDelta, x2: 0, y2: chart.topDelta + chart.yAxisHeight, transform: 'translate('+chart.leftDelta+' '+chart.topDelta+')', class: 'chart__y-indicator js-chart__y-indicator is-hidden'});
+      setAttributes(tooltipLine, {x1: 0, y1: chart.topDelta, x2: 0, y2: chart.topDelta + chart.yAxisHeight, transform: 'translate('+chart.leftDelta+' '+chart.topDelta+')', class: 'chart__y-indicator js-chart__y-indicator is-hidden'});
       chart.svg.insertBefore(tooltipLine, chart.element.getElementsByClassName('js-chart__dataset')[0]);
       chart.interLine = chart.element.getElementsByClassName('js-chart__y-indicator')[0];
     }
@@ -856,12 +870,12 @@
       var markerSize = chart.markers[0][chart.selectedMarker].getBBox();
       
       if(chart.options.yIndicator) {
-        Util.removeClass(chart.interLine, 'is-hidden');
+        chart.interLine.classList.remove('is-hidden');
         chart.interLine.setAttribute('transform', 'translate('+(markerSize.x + markerSize.width/2)+' 0)');
       }
       
       if(chart.tooltipOn) {
-        Util.removeClass(chart.tooltip, 'is-hidden');
+        chart.tooltip.classList.remove('is-hidden');
         setTooltipHTML(chart);
         placeTooltip(chart);
       }
@@ -891,8 +905,8 @@
       (window.requestAnimationFrame) ? window.cancelAnimationFrame(chart.hoverId) : clearTimeout(chart.hoverId);
       chart.hoverId = false;
     }
-    if(chart.tooltipOn) Util.addClass(chart.tooltip, 'is-hidden');
-    if(chart.options.yIndicator)Util.addClass(chart.interLine, 'is-hidden');
+    if(chart.tooltipOn) chart.tooltip.classList.add('is-hidden');
+    if(chart.options.yIndicator) chart.interLine.classList.add('is-hidden');
     resetMarkers(chart, false);
     resetBars(chart, false);
     chart.selectedMarker = false;
@@ -902,7 +916,7 @@
 
   function resetMarkers(chart, bool) {
     for(var i = 0; i < chart.markers.length; i++) {
-      if(chart.markers[i] && chart.markers[i][chart.selectedMarker]) Util.toggleClass(chart.markers[i][chart.selectedMarker], chart.selectedMarkerClass, bool);
+      if(chart.markers[i] && chart.markers[i][chart.selectedMarker]) chart.markers[i][chart.selectedMarker].classList.toggle(chart.selectedMarkerClass, bool);
     }
   };
 
@@ -910,7 +924,7 @@
     // for column/bar chart -> change opacity on hover
     if(!chart.options.type || chart.options.type != 'column') return;
     for(var i = 0; i < chart.bars.length; i++) {
-      if(chart.bars[i] && chart.bars[i][chart.selectedMarker]) Util.toggleClass(chart.bars[i][chart.selectedMarker], chart.selectedBarClass, bool);
+      if(chart.bars[i] && chart.bars[i][chart.selectedMarker]) chart.bars[i][chart.selectedMarker].classList.toggle(chart.selectedBarClass, bool);
     }
   };
 
@@ -1222,7 +1236,7 @@
     // translate the xlabels to center them 
     if(chart.xAxisLabelRotation) return; // labels were rotated - no need to translate
     for(var i = 0; i < labels.length; i++) {
-      Util.setAttributes(labels[i], {x: labels[i].getBBox().x + delta});
+      setAttributes(labels[i], {x: labels[i].getBBox().x + delta});
     }
   };
 
@@ -1267,7 +1281,7 @@
       var lineType =  chart.options.column && chart.options.column.radius ? 'round' : 'square';
       if(lineType == 'round' && chart.options.stacked && index < chart.options.datasets.length - 1) lineType = 'square';
       var dPath = (lineType == 'round') ? getRoundedColumnRect(chart, points) : getStraightLine(points);
-      Util.setAttributes(pathL, {d: dPath, class: 'chart__data-bar chart__data-bar--'+(index+1)+' js-chart__data-bar js-chart__data-bar--'+(index+1)});
+      setAttributes(pathL, {d: dPath, class: 'chart__data-bar chart__data-bar--'+(index+1)+' js-chart__data-bar js-chart__data-bar--'+(index+1)});
       gEl.appendChild(pathL);
     }
     return gEl;
@@ -1362,6 +1376,44 @@
 
   function getDoughnutSvgCode(chart) {
 
+  };
+
+  function setAttributes(el, attrs) {
+    for(var key in attrs) {
+      el.setAttribute(key, attrs[key]);
+    }
+  };
+
+  var extendProps = function () {
+    // Variables
+    var extended = {};
+    var deep = false;
+    var i = 0;
+    var length = arguments.length;
+    // Check if a deep merge
+    if ( Object.prototype.toString.call( arguments[0] ) === '[object Boolean]' ) {
+      deep = arguments[0];
+      i++;
+    }
+    // Merge the object into the extended object
+    var merge = function (obj) {
+      for ( var prop in obj ) {
+        if ( Object.prototype.hasOwnProperty.call( obj, prop ) ) {
+        // If deep merge and property is an object, merge properties
+          if ( deep && Object.prototype.toString.call(obj[prop]) === '[object Object]' ) {
+            extended[prop] = extend( true, extended[prop], obj[prop] );
+          } else {
+            extended[prop] = obj[prop];
+          }
+        }
+      }
+    };
+    // Loop through each object and conduct a merge
+    for ( ; i < length; i++ ) {
+      var obj = arguments[i];
+      merge(obj);
+    }
+    return extended;
   };
 
   Chart.defaults = {

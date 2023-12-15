@@ -1,25 +1,5 @@
 <?php require APPROOT . '/views/includes/head.php'; ?>
-
-<body class="bg-dark min-height-100vh flex flex-center padding-md">
-  <div data-toast-interval="15000" class="toast toast--hidden toast--top-right js-toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast-1">
-    <div class="flex items-start justify-between">
-      <div class="text-component text-sm">
-        <h1 class="toast__title text-md">Title One</h1>
-        <p class="toast__p">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus iusto ut, error aspernatur quaerat corrupti ipsum deleniti ratione.</p>
-      </div>
-
-      <button class="reset toast__close-btn margin-left-xxxxs js-toast__close-btn js-tab-focus">
-        <svg class="icon" viewBox="0 0 12 12">
-          <title>Close notification</title>
-          <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <line x1="1" y1="1" x2="11" y2="11" />
-            <line x1="11" y1="1" x2="1" y2="11" />
-          </g>
-        </svg>
-      </button>
-    </div>
-  </div>
-
+<div class="bg-dark min-height-100vh flex flex-center padding-md">
   <form class="bg radius-md shadow-sm padding-lg max-width-xxs form-signin" onsubmit="signUp(event)">
     <div class="text-component text-center margin-bottom-md">
       <h1>Get started</h1>
@@ -137,6 +117,5 @@
       <p class="text-xs color-contrast-medium">By joining, you agree to our <a href="#0">Terms</a> and <a href="#0">Privacy Policy</a>.</p>
     </div>
   </form>
-</body>
-
+</div>
 <?php require APPROOT . '/views/includes/footer.php'; ?>

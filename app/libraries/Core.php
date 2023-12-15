@@ -1,8 +1,8 @@
 <?php
 class Core
 {
-    protected $currentController = 'landingpagecontroller';
-    protected $currentMethod = 'index';
+    protected $currentController = 'Stores';
+    protected $currentMethod = 'overview';
     protected $params = '';
 
 
@@ -20,6 +20,7 @@ class Core
             //destroy the first part of the url after the the urlroot
             // unset($url[0]);
         } else {
+           header('Location: ' . URLROOT . $this->currentController . '/' . $this->currentMethod . '/');
         }
 
         //if the controller doesn't exist then change the controller to $currentController

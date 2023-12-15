@@ -1,7 +1,10 @@
 @use '../base' as *;
+@use '_2_chart.scss' as *;
+@use '_3_area-chart.scss' as *;
+
 /* -------------------------------- 
 
-File#: _3_stats-card
+File#: _4_stats-card
 Title: Statistics Card
 Descr: Statistics card for app UI
 Usage: codyhouse.co/license

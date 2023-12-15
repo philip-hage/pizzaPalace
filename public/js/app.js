@@ -16,16 +16,10 @@ buttons.forEach((button) => {
   });
 });
 
-function openToastSuccess(title, message) {
-  var toast = document.querySelector(".toast1");
-  var toastTitle = document.querySelector(".toast__title");
-  var toastP = document.querySelector(".toast__p");
-
-  toastTitle.textContent = title;
-  message = message.replace(/\+/g, " ");
-  toastP.textContent = message;
-
-  var openToastEvent = new CustomEvent("openToast");
+function openToast(productName) {
+  var toast = document.querySelector(".js-toast");
+  toast.querySelector(".toast__p").innerHTML = productName + " added to cart";
+  openToastEvent = new CustomEvent("openToast"); // custom event
   toast.dispatchEvent(openToastEvent);
 }
 
@@ -224,3 +218,100 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+  // Get the selectedStore data from localStorage
+  var selectedStore = JSON.parse(localStorage.getItem("selectedStore"));
+
+  // Check if selectedStore exists and has the necessary data
+  if (selectedStore && selectedStore.storeName) {
+    // Set the store name in the specified div
+    var storeName = decodeHTMLEntities(selectedStore.storeName);
+    document.querySelector(".storeName").textContent = storeName;
+  }
+});
+
+function decodeHTMLEntities(input) {
+  // Check if the input string contains the HTML entity &#039;
+  if (input.includes("&#039;")) {
+    // Replace &#039; with an apostrophe
+    return input.replace(/&#039;/g, "'");
+  } else {
+    // Return the original string if no replacement is needed
+    return input;
+  }
+}
+document.addEventListener("DOMContentLoaded", function () {
+  const modalButtons = document.querySelectorAll('[aria-controls^="modal-name-"]');
+  const modal = document.querySelector(".modal");
+  const productImage = document.getElementById("product-image");
+  const productName = document.getElementById("modal-title-2");
+  const productDescription = document.getElementById("product-description");
+  const modalPrice = document.getElementById("1"); // Update to the correct ID
+  const plusButton = document.querySelector(".plusButton"); // Update to the correct class
+  const minusButton = document.querySelector(".minButton"); // Update to the correct class
+  const quantityInput = document.getElementById("index-value"); // Update to the correct ID
+
+  let basePrice = 0;
+
+  modalButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      const productId = button.getAttribute("id").replace("modal-name-", "");
+      console.log("productId:", productId);
+
+      const productCard = document.getElementById("product-card-" + productId);
+
+      if (productCard) {
+        const productData = {
+          imagePath: productCard.querySelector(".imagePath").value,
+          productName: productCard.querySelector(".productName").value,
+          productDescription: productCard.querySelector(".productDescription").value,
+          productPrice: parseFloat(productCard.querySelector(".productPrice").value),
+        };
+
+        productImage.src = productData.imagePath;
+        productName.textContent = productData.productName;
+        productDescription.textContent = productData.productDescription;
+        basePrice = productData.productPrice;
+
+        modalPrice.innerHTML = '€ ' + basePrice;
+
+        modal.classList.add("js-modal--visible");
+      } else {
+        console.error("Product card not found for productId:", productId);
+      }
+    });
+  });
+
+  modal.addEventListener("click", function (event) {
+    if (
+      event.target.classList.contains("modal") ||
+      event.target.classList.contains("js-modal__close")
+    ) {
+      modal.classList.remove("js-modal--visible");
+    }
+  });
+
+  if (quantityInput && plusButton && minusButton) {
+    minusButton.addEventListener("click", function () {
+      let quantity = parseInt(quantityInput.value);
+      if (quantity > 1) {
+        quantity--;
+        quantityInput.value = quantity;
+        updateModalPrice();
+      }
+    });
+
+    plusButton.addEventListener("click", function () {
+      let quantity = parseInt(quantityInput.value);
+      quantityInput.value = quantity;
+      updateModalPrice();
+    });
+  }
+
+  function updateModalPrice() {
+    let quantity = parseInt(quantityInput.value);
+    quantity++;
+    const totalPrice = basePrice * quantity;
+    modalPrice.textContent = '€ ' + totalPrice.toFixed(2);
+  }
+});

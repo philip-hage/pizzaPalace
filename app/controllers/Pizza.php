@@ -22,7 +22,7 @@ class Pizza extends Controller
         $data = [
             'title' => 'Pizza Palace'
         ];
-        $this->view('pizza/index', $data);
+        $this->view('pizza/overview', $data);
     }
 
     public function overview($params = NULL)
@@ -160,6 +160,6 @@ class Pizza extends Controller
             'urlQuery' => $urlQuery,
         ];
 
-        $this->view('pizza/index', $data);
+        $this->view('pizza/overview', $data);
     }
 }

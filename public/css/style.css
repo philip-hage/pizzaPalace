@@ -46,3 +46,12 @@
   max-width: 100%; /* Make sure images fit within the slide */
   height: auto; /* Maintain the aspect ratio */
 }
+
+.card-v3__img {
+  max-width: 150px;
+  height: 100px;
+}
+
+.quantity-btn {
+  background-color: #009A44;
+}

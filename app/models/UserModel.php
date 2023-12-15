@@ -33,22 +33,14 @@ class UserModel
         return $this->db->execute();
     }
 
-    public function login($email, $password)
+    public function checkUserExists($email, $password)
     {
-        $this->db->query("SELECT * FROM customers WHERE customerEmail = :email");
-        $this->db->bind(":email", $email);
+        $this->db->query("SELECT * FROM customers WHERE customerEmail = :customerEmail AND customerPassword = :customerPassword");
+        $this->db->bind(":customerEmail", $email);
+        $this->db->bind(":customerPassword", $password);
         $row = $this->db->single();
 
-        if ($row) {
-            $stored_password = $row->customerPassword;
-
-            // Compare the plain text password (not recommended)
-            if ($password == $stored_password) {
-                return $row; // Login successful, return user data
-            }
-        }
-
-        return null; // Login failed
+        return $row ?? false;
     }
 
     public function checkEmailExists($email)
