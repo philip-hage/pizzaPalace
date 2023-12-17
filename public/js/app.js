@@ -258,7 +258,6 @@ document.addEventListener("DOMContentLoaded", function () {
   modalButtons.forEach(function (button) {
     button.addEventListener("click", function () {
       const productId = button.getAttribute("id").replace("modal-name-", "");
-      console.log("productId:", productId);
 
       const productCard = document.getElementById("product-card-" + productId);
 
@@ -310,6 +309,16 @@ document.addEventListener("DOMContentLoaded", function () {
       quantityInput.value = quantity;
       updateModalPlusPrice();
     });
+
+    quantityInput.addEventListener("input", function () {
+      updateModalPrice();
+    });
+  }
+
+  function updateModalPrice() {
+    let quantity = parseInt(quantityInput.value);
+    const totalPrice = basePrice * quantity;
+    modalPrice.textContent = "€ " + totalPrice.toFixed(2);
   }
 
   function updateModalPriceMin() {

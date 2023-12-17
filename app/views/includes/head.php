@@ -39,9 +39,9 @@
                     <div class="header__nav-inner col-6@sm">
                         <div class="header__label">Main menu</div>
                         <?php if (CURRENTCONTROLLER !== 'User' && CURRENTCONTROLLER !== 'Stores') : ?>
-                        <ul class="header__list">
-                            <button class="btn btn--primary header__nav-btn" aria-controls="drawer-cart-id">Show Cart</button>
-                        </ul>
+                            <ul class="header__list">
+                                <button class="btn btn--primary header__nav-btn" aria-controls="drawer-cart-id">Show Cart</button>
+                            </ul>
                         <?php endif; ?>
                     </div>
                     <!-- User is logged in -->
@@ -85,7 +85,7 @@
                     <?php else : ?>
                         <!-- User is not logged in -->
                         <li role="menuitem">
-                            <a class="menu__content js-menu__content" href="<?= URLROOT ?>user/login">Sign in</a>
+                            <a class="menu__content js-menu__content" href="<?= URLROOT ?>user/login/">Sign in</a>
                         </li>
                     <?php endif; ?>
                     </li>

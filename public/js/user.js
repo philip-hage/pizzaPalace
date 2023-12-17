@@ -27,15 +27,11 @@ function openToastFailed(title, message) {
 // Extract toast parameters from the URL path
 const urlPath = window.location.pathname;
 
-console.log(urlPath);
-
 // Decode the URL path
 const decodedUrlPath = decodeURIComponent(urlPath);
 
 // Use a regular expression to extract content inside curly braces, handling URL-encoded semicolons
 const match = decodedUrlPath.match(/\{([^{}]+)\}/);
-
-console.log(match);
 
 if (match) {
   // Extract the content inside curly braces and decode each component
@@ -51,25 +47,20 @@ if (match) {
     toastParams[key] = value;
   });
 
-  console.log("Decoded Parameters:", toastParams);
-
   // Check if 'toast' parameter is present and has a value of 'true'
   if (
     toastParams.toast === "true" &&
     toastParams.toasttitle &&
     toastParams.toastmessage
   ) {
-    console.log("Triggering openToastSuccess function");
     openToastSuccess(toastParams.toasttitle, toastParams.toastmessage);
   } else if (
     toastParams.toast === "false" &&
     toastParams.toasttitle &&
     toastParams.toastmessage
   ) {
-    console.log("Triggering openToastFailed function");
     openToastSuccess(toastParams.toasttitle, toastParams.toastmessage);
   } else {
-    console.log("Invalid or missing parameters for toast.");
   }
 }
 
@@ -101,7 +92,6 @@ async function signUp(event) {
   const response = await ajaxFetch.json();
 
   if (response.success) {
-    console.log(response.success.message);
     window.location.href = "http://localhost/pizzapalace/user/edit/";
   } else {
     // Loop through the response and append error messages to the corresponding input fields
@@ -147,15 +137,12 @@ async function login(event) {
   const response = await ajaxFetch.json();
 
   if (response.success) {
-    console.log(response.success.message);
     window.location.href = "http://localhost/pizzapalace/pizza/overview/";
   } else {
     // Loop through the response and append error messages to the corresponding input fields
     Object.keys(response).forEach((fieldName) => {
       const inputField = form.querySelector(`[name="${fieldName}"]`);
       const errorMessage = response[fieldName].message;
-
-      console.log(inputField);
 
       if (inputField) {
         // Create and append error element
@@ -198,7 +185,6 @@ async function editPassword(event) {
   const response = await ajaxFetch.json();
 
   if (response.success) {
-    console.log(response.success.message);
     window.location.href = "http://localhost/pizzapalace/user/editPassword/";
   } else {
     // Loop through the response and append error messages to the corresponding input fields
@@ -244,7 +230,6 @@ async function editProfile(event) {
   const response = await ajaxFetch.json();
 
   if (response.success) {
-    console.log(response.success.message);
     window.location.href = "http://localhost/pizzapalace/user/edit/";
   } else {
     // Loop through the response and append error messages to the corresponding input fields

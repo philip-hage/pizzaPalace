@@ -341,7 +341,9 @@
                                 <div class="card">
                                     <figure class="card__img-wrapper">
                                         <?php if ($product->imagePath) : ?>
-                                            <img src="<?= $product->imagePath ?>" alt="<?= $product->productName ?> Image">
+                                            <a class="cursor-pointer" aria-controls="modal-name-2" id="modal-name-<?= $product->productId ?>">
+                                                <img src="<?= $product->imagePath ?>" alt="<?= $product->productName ?> Image">
+                                            </a>
                                         <?php else : ?>
                                             <!-- Add a default image or placeholder if the imagePath is not available -->
                                             <img src="<?= URLROOT . '/path/to/default/image.jpg' ?>" alt="Default Image">
