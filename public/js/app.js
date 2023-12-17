@@ -241,12 +241,14 @@ function decodeHTMLEntities(input) {
   }
 }
 document.addEventListener("DOMContentLoaded", function () {
-  const modalButtons = document.querySelectorAll('[aria-controls^="modal-name-"]');
+  const modalButtons = document.querySelectorAll(
+    '[aria-controls^="modal-name-"]'
+  );
   const modal = document.querySelector(".modal");
   const productImage = document.getElementById("product-image");
   const productName = document.getElementById("modal-title-2");
   const productDescription = document.getElementById("product-description");
-  const modalPrice = document.getElementById("1"); // Update to the correct ID
+  const modalPrice = document.getElementById("modal-price"); // Update to the correct ID
   const plusButton = document.querySelector(".plusButton"); // Update to the correct class
   const minusButton = document.querySelector(".minButton"); // Update to the correct class
   const quantityInput = document.getElementById("index-value"); // Update to the correct ID
@@ -264,8 +266,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const productData = {
           imagePath: productCard.querySelector(".imagePath").value,
           productName: productCard.querySelector(".productName").value,
-          productDescription: productCard.querySelector(".productDescription").value,
-          productPrice: parseFloat(productCard.querySelector(".productPrice").value),
+          productDescription: productCard.querySelector(".productDescription")
+            .value,
+          productPrice: parseFloat(
+            productCard.querySelector(".productPrice").value
+          ),
         };
 
         productImage.src = productData.imagePath;
@@ -273,7 +278,7 @@ document.addEventListener("DOMContentLoaded", function () {
         productDescription.textContent = productData.productDescription;
         basePrice = productData.productPrice;
 
-        modalPrice.innerHTML = '€ ' + basePrice;
+        modalPrice.innerHTML = "€ " + basePrice;
 
         modal.classList.add("js-modal--visible");
       } else {
@@ -295,23 +300,29 @@ document.addEventListener("DOMContentLoaded", function () {
     minusButton.addEventListener("click", function () {
       let quantity = parseInt(quantityInput.value);
       if (quantity > 1) {
-        quantity--;
         quantityInput.value = quantity;
-        updateModalPrice();
+        updateModalPriceMin();
       }
     });
 
     plusButton.addEventListener("click", function () {
       let quantity = parseInt(quantityInput.value);
       quantityInput.value = quantity;
-      updateModalPrice();
+      updateModalPlusPrice();
     });
   }
 
-  function updateModalPrice() {
+  function updateModalPriceMin() {
+    let quantity = parseInt(quantityInput.value);
+    quantity--;
+    const totalPrice = basePrice * quantity;
+    modalPrice.textContent = "€ " + totalPrice.toFixed(2);
+  }
+
+  function updateModalPlusPrice() {
     let quantity = parseInt(quantityInput.value);
     quantity++;
     const totalPrice = basePrice * quantity;
-    modalPrice.textContent = '€ ' + totalPrice.toFixed(2);
+    modalPrice.textContent = "€ " + totalPrice.toFixed(2);
   }
 });

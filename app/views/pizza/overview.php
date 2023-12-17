@@ -98,7 +98,7 @@
         <footer class="padding-md bg-contrast-lower">
             <div class="flex justify-end gap-md">
                 <em style="margin-top: 5px;">
-                    <p class="price text-sm text-primary js-product-total-price" style="font-size: medium; font-weight:bold;" id="1"></p>
+                    <p class="price text-sm text-primary js-product-total-price" style="font-size: medium; font-weight:bold;" id="modal-price"></p>
                 </em>
                 <div class="number-input number-input--v2 js-number-input js-filter__custom-control" aria-controls="adv-filter-gallery" data-filter="indexValue">
                     <input class="form-control text-sm@md js-number-input__value productAmount" type="number" name="productAmount" style="width: 80px;" id="index-value" min="1" max="100" step="1" value="1">

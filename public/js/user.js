@@ -126,10 +126,6 @@ async function signUp(event) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  // Wait for the DOM to be fully loaded before executing the code
-});
-
 async function login(event) {
   event.preventDefault();
   // Get the form element
@@ -240,13 +236,10 @@ async function editProfile(event) {
   const formData = new FormData(form);
 
   // Make a POST request using the fetch API
-  const ajaxFetch = await fetch(
-    "http://localhost/pizzapalace/user/edit/",
-    {
-      method: "POST",
-      body: formData,
-    }
-  );
+  const ajaxFetch = await fetch("http://localhost/pizzapalace/user/edit/", {
+    method: "POST",
+    body: formData,
+  });
 
   const response = await ajaxFetch.json();
 
